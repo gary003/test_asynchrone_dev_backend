@@ -11,8 +11,7 @@ router.get('/:id/members', async (req, res) => {
     const members = await fetchProjectMembers(projectId)
     return res.status(200).json(members)
   } catch (error) {
-    console.log({ error })
-    return res.status(400).json({ message: errorAPIProject.invalidId.message })
+    return res.status(400).json({ message: errorAPIProject.invalidId.message, errorPresentation: String(error) })
   }
 })
 

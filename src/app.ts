@@ -2,7 +2,7 @@ require('dotenv').config()
 import express, { Request, Response, NextFunction } from 'express'
 import allRoutes from './v1/presentation/routes' // Fixed import path
 import swaggerUi from 'swagger-ui-express'
-import openApiSpec from './v1/helpers/apiDocumentation/v3'
+import { swaggerSpec } from './v1/helpers/apiDocumentation/v3'
 import helmet from 'helmet'
 import cors from 'cors'
 import logger from './v1/helpers/logger'
@@ -12,7 +12,7 @@ const urlBase: string = 'api/v1'
 
 if (process.env.NODE_ENV !== 'production') {
   // OpenAPI V3
-  app.use(`/${urlBase}/doc3/apiDocumentation`, swaggerUi.serve, swaggerUi.setup(openApiSpec))
+  app.use(`/${urlBase}/doc3/apiDocumentation`, swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 }
 
 app.use(helmet())

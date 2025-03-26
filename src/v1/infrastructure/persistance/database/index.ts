@@ -1,21 +1,22 @@
 import { getConnection } from './db_connection/connectionFile'
 import { ProjectMember, User } from './entity'
 import logger from '../../../helpers/logger'
-
-interface ProjectMemberQueryResult {
-  id: number
-  first_name: string
-  last_name: string
-}
+import { ProjectMemberQueryResult } from './index.dto'
 
 export const getProjectMembers = async (projectId: number) => {
   const connection = await getConnection()
 
   const query = `
-      SELECT u.id, u.first_name, u.last_name
-      FROM projects_members pm
-      JOIN users u ON pm.user_id = u.id
-      WHERE pm.project_id = ${projectId};
+    SELECT 
+      u.id, 
+      u.first_name, 
+      u.last_name, 
+      GROUP_CONCAT(pm2.project_id) AS groups
+    FROM projects_members pm
+    JOIN users u ON pm.user_id = u.id
+    LEFT JOIN projects_members pm2 ON pm2.user_id = u.id
+    WHERE pm.project_id = ${projectId}
+    GROUP BY u.id, u.first_name, u.last_name;
     `
   try {
     const members = await connection.query(query)
@@ -23,7 +24,7 @@ export const getProjectMembers = async (projectId: number) => {
     return await members.map((m: ProjectMemberQueryResult) => ({
       id: m.id,
       name: `${m.first_name} ${m.last_name}`,
-      groups: []
+      groups: m.groups
     }))
   } catch (error) {
     logger.error('Error executing getProjectMembers query:', error)

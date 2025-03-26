@@ -17,7 +17,7 @@ describe('Integration tests - presentation:routes', () => {
       if (response.body.length > 0) {
         chai.expect(response.body[0]).to.have.property('id')
         chai.expect(response.body[0]).to.have.property('name')
-        chai.expect(response.body[0]).to.have.property('groups').that.is.an('array')
+        chai.expect(response.body[0]).to.have.property('groups').that.is.an('string')
       }
     })
 
