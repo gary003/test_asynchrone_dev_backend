@@ -5,8 +5,7 @@
   "version": "1.0.0",
   "main": "./src/v1/bin/server.ts",
   "scripts": {
-    "start": "npm run build && node ./dist/bin/server.js",
-    "start-dev": "npm run build && npx nodemon ./dist/bin/server.js",
+    "start": "npx tsc -p . && node ./dist/bin/server.js",
     "build": "npx tsc -p .",
     "lint": "npx eslint .",
     "test": "npx c8 mocha -r ts-node/register --timeout 500000 './tests/integration/**/*.test.ts'"

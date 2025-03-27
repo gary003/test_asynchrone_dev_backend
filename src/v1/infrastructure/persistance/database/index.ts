@@ -15,19 +15,20 @@ export const getProjectMembers = async (projectId: number) => {
     FROM projects_members pm
     JOIN users u ON pm.user_id = u.id
     LEFT JOIN projects_members pm2 ON pm2.user_id = u.id
-    WHERE pm.project_id = ${projectId}
+    WHERE pm.project_id = '${projectId}'
     GROUP BY u.id, u.first_name, u.last_name;
-    `
+  `
+
   try {
     const members = await connection.query(query)
 
     return await members.map((m: ProjectMemberQueryResult) => ({
       id: m.id,
       name: `${m.first_name} ${m.last_name}`,
-      groups: m.groups
+      groups: m.groups.split(',').map((x) => String.fromCharCode(Number(x) + 65))
     }))
   } catch (error) {
-    logger.error('Error executing getProjectMembers query:', error)
+    logger.error('Error executing getProjectMembers query:', String(error))
     throw new Error(`Failed to fetch project members: ${error instanceof Error ? error.message : String(error)}`)
   }
 }
