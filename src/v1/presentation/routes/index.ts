@@ -11,7 +11,7 @@ router.get('/:id/members', async (req, res) => {
     const members = await fetchProjectMembers(projectId)
     return res.status(200).json(members)
   } catch (error) {
-    return res.status(400).json({ message: errorAPIProject.invalidId.message, errorPresentation: String(error) })
+    return res.status(400).json({ errorPresentation: String(error) })
   }
 })
 
@@ -28,7 +28,7 @@ router.post('/:id/members', async (req, res) => {
     const member = await createProjectMember(projectId, user_ids[0])
     return res.status(201).json(member)
   } catch (err) {
-    return res.status(400).json({ message: errorAPIProject.invalidInput.message, presentationError: String(err) })
+    return res.status(400).json({ presentationError: String(err) })
   }
 })
 

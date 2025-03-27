@@ -1,20 +1,29 @@
-FROM node:22-alpine
+FROM node:22
 
-WORKDIR /app
+WORKDIR /tap/app
 
-# Install Python, build dependencies, and SQLite
-RUN apk add --no-cache python3 py3-pip python3-dev \
-    && apk add --no-cache build-base \
-    && apk add --no-cache sqlite sqlite-dev
-
+# Install Python, build dependencies, SQLite, and additional tools
+RUN apt-get update && apt-get install -y \
+    curl \
+    git \
+    python3 \
+    python3-pip \
+    python3-dev \
+    build-essential \
+    sqlite3 \
+    libsqlite3-dev \
+    && rm -rf /var/lib/apt/lists/*
+    
 COPY package*.json ./
 
-RUN ["npm", "install"]
+RUN npm install
 
+# Copy app source code, excluding /tap/data/projects.db (if in .dockerignore)
 COPY . .
 
 EXPOSE 8080
 
-RUN ["npm", "run", "build"]
+# Run as root (explicit for clarity)
+USER root
 
-CMD [ "npm", "run", "start"]
+CMD ["npm", "run", "start"]

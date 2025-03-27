@@ -1,0 +1,4307 @@
+--- File: ./specs.md ---
+Hi!
+
+
+
+This is an off-site test for the Backend Developer position at Cloud Solutions (Wimi).
+
+
+
+# Context
+
+
+
+Wimi allows users to collaborate around projects.
+
+
+
+To be able to interact with a project, users need to be explicit members of a project.
+
+
+
+The given SQLite file `projects.db` contains three tables that captures those statements:
+
+
+
+- `users`
+
+- `projects`
+
+- `projects_members`
+
+
+
+# Exercise A: REST API Endpoints
+
+
+
+## Requirements
+
+
+
+- Use the given SQLite file as the database.
+
+- Ensure proper error handling and return appropriate HTTP status codes.
+
+- Validate input data and handle edge cases.
+
+- Write tests for each endpoint.
+
+- Follow RESTful principles and best practices.
+
+
+
+## 1. GET /projects/:id/members
+
+
+
+**Description:**
+
+Retrieve a list of members for a specific project.
+
+
+
+**Request:**
+
+
+
+- Method: GET
+
+- URL: `/projects/:id/members`
+
+- URL Parameters:
+
+  - `id` (integer): The ID of the project.
+
+
+
+**Response:**
+
+
+
+- Status: 200 OK
+
+- Body: JSON array of members, each member containing:
+
+  - `id` (integer): The ID of the member.
+
+  - `name` (string): The full name of the member.
+
+
+
+**Example:**
+
+
+
+```json
+
+[
+
+  {
+
+    "id": 1,
+
+    "name": "John Doe"
+
+  },
+
+  {
+
+    "id": 2,
+
+    "name": "Jane Smith"
+
+  }
+
+]
+
+```
+
+
+
+## 2. POST /projects/:id/members
+
+
+
+**Description:**
+
+Add a new member to a specific project.
+
+
+
+**Request:**
+
+
+
+- Method: POST
+
+- URL: `/projects/:id/members`
+
+- URL Parameters:
+
+  - `id` (integer): The ID of the project.
+
+- Body: JSON object containing:
+
+  - `user_ids` (array of integers): The IDs of users to be added as members.
+
+
+
+**Response:**
+
+
+
+- Status: 201 Created
+
+- Body: JSON object of the newly added member, containing:
+
+  - `id` (integer): The ID of the member.
+
+  - `name` (string): The full name of the member.
+
+
+
+**Example:**
+
+
+
+```json
+
+{
+
+  "id": 3,
+
+  "name": "Alice Johnson"
+
+}
+
+```
+
+
+
+## 3. DELETE /projects/:projectId/members/:userId
+
+
+
+**Description:**
+
+Remove a member from a specific project.
+
+
+
+**Request:**
+
+
+
+- Method: DELETE
+
+- URL: `/projects/:projectId/members/:userId`
+
+- URL Parameters:
+
+  - `projectId` (integer): The ID of the project.
+
+  - `userId` (integer): The ID of the member to be removed.
+
+
+
+**Response:**
+
+
+
+- Status: 204 No Content
+
+
+
+# Exercise B: Groups and Recursive Members
+
+
+
+## Requirements
+
+
+
+- Update the SQL schema to be able to reprensent groups and group members (which can be either user or groups).
+
+- Updat ethe SQL schema to be able to add groups and users as project members
+
+- A limit of 5 nested groups should be used.
+
+- Update the `GET /projects/:id/members` API endpoint to fetch members recursively (flattened).
+
+- Other endpoints can be ignored.
+
+
+
+## GET /projects/:id/members API endpoint
+
+
+
+**Description:**
+
+Retrieve a list of members for a specific project, including members of groups recursively.
+
+
+
+**Request:**
+
+
+
+- Method: GET
+
+- URL: `/projects/:id/members`
+
+- URL Parameters:
+
+  - `id` (integer): The ID of the project.
+
+
+
+**Response:**
+
+
+
+- Status: 200 OK
+
+- Body: JSON array of members, each member containing:
+
+  - `id` (integer): The ID of the member.
+
+  - `name` (string): The full name of the member.
+
+  - `groups` (array of string): The names of the groups from which the member was included.
+
+
+
+**Example:**
+
+
+
+```json
+
+[
+
+  {
+
+    "id": 1,
+
+    "name": "John Doe",
+
+    "groups": []
+
+  },
+
+  {
+
+    "id": 2,
+
+    "name": "Jane Smith",
+
+    "groups": ["A", "B"]
+
+  },
+
+  {
+
+    "id": 3,
+
+    "name": "Alice Johnson",
+
+    "groups": ["B"]
+
+  },
+
+  {
+
+    "id": 4,
+
+    "name": "Ben Stevenson",
+
+    "groups": ["A"]
+
+  }
+
+]
+
+```
+
+
+
+# What we pay attention to
+
+
+
+- Structure of the code
+
+- Use of git
+
+- Respect of KISS and DRY principles
+
+- Tests
+
+- API best practices
+
+
+
+# How to
+
+
+
+1. Do the exercise
+
+2. Ping us when you're done
+
+3. We will contact you to discuss your solution
+
+./.c8rc.json
+
+{
+
+  "include": ["src/v1"],
+
+  "thresholds": {
+
+    "branches": 80,
+
+    "lines": 85,
+
+    "functions": 90,
+
+    "statements": 85
+
+  }
+
+}
+
+./tsconfig.json
+
+{
+
+  "compilerOptions": {
+
+    /* Visit https://aka.ms/tsconfig.json to read more about this file */
+
+
+
+    /* Projects */
+
+    // "incremental": true,                              /* Enable incremental compilation */
+
+    // "composite": true,                                /* Enable constraints that allow a TypeScript project to be used with project references. */
+
+    // "tsBuildInfoFile": "./",                          /* Specify the folder for .tsbuildinfo incremental compilation files. */
+
+    // "disableSourceOfProjectReferenceRedirect": true,  /* Disable preferring source files instead of declaration files when referencing composite projects */
+
+    // "disableSolutionSearching": true,                 /* Opt a project out of multi-project reference checking when editing. */
+
+    // "disableReferencedProjectLoad": true,             /* Reduce the number of projects loaded automatically by TypeScript. */
+
+
+
+    /* Language and Environment */
+
+    "target": "es2017" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
+
+    // "lib": [],                                        /* Specify a set of bundled library declaration files that describe the target runtime environment. */
+
+    // "jsx": "preserve",                                /* Specify what JSX code is generated. */
+
+    "experimentalDecorators": true /* Enable experimental support for TC39 stage 2 draft decorators. */,
+
+    "emitDecoratorMetadata": true /* Emit design-type metadata for decorated declarations in source files. */,
+
+    // "jsxFactory": "",                                 /* Specify the JSX factory function used when targeting React JSX emit, e.g. 'React.createElement' or 'h' */
+
+    // "jsxFragmentFactory": "",                         /* Specify the JSX Fragment reference used for fragments when targeting React JSX emit e.g. 'React.Fragment' or 'Fragment'. */
+
+    // "jsxImportSource": "",                            /* Specify module specifier used to import the JSX factory functions when using `jsx: react-jsx*`.` */
+
+    // "reactNamespace": "",                             /* Specify the object invoked for `createElement`. This only applies when targeting `react` JSX emit. */
+
+    // "noLib": true,                                    /* Disable including any library files, including the default lib.d.ts. */
+
+    // "useDefineForClassFields": true,                  /* Emit ECMAScript-standard-compliant class fields. */
+
+
+
+    /* Modules */
+
+    "module": "commonjs" /* Specify what module code is generated. */,
+
+    // "rootDir": "./src" /* Specify the root folder within your source files. */,
+
+    "moduleResolution": "node" /* Specify how TypeScript looks up a file from a given module specifier. */,
+
+    // "baseUrl": "./",                                  /* Specify the base directory to resolve non-relative module names. */
+
+    // "paths": {},                                      /* Specify a set of entries that re-map imports to additional lookup locations. */
+
+    // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
+
+    // "typeRoots": [],                                  /* Specify multiple folders that act like `./node_modules/@types`. */
+
+    // "types": [],                                      /* Specify type package names to be included without being referenced in a source file. */
+
+    // "allowUmdGlobalAccess": true,                     /* Allow accessing UMD globals from modules. */
+
+    "resolveJsonModule": true /* Enable importing .json files */,
+
+    // "noResolve": true,                                /* Disallow `import`s, `require`s or `<reference>`s from expanding the number of files TypeScript should add to a project. */
+
+
+
+    /* JavaScript Support */
+
+    // "allowJs": true,                                  /* Allow JavaScript files to be a part of your program. Use the `checkJS` option to get errors from these files. */
+
+    // "checkJs": true,                                  /* Enable error reporting in type-checked JavaScript files. */
+
+    // "maxNodeModuleJsDepth": 1,                        /* Specify the maximum folder depth used for checking JavaScript files from `node_modules`. Only applicable with `allowJs`. */
+
+
+
+    /* Emit */
+
+    // "declaration": true,                              /* Generate .d.ts files from TypeScript and JavaScript files in your project. */
+
+    // "declarationMap": true,                           /* Create sourcemaps for d.ts files. */
+
+    // "emitDeclarationOnly": true,                      /* Only output d.ts files and not JavaScript files. */
+
+    // "sourceMap": true,                                /* Create source map files for emitted JavaScript files. */
+
+    // "outFile": "./",                                  /* Specify a file that bundles all outputs into one JavaScript file. If `declaration` is true, also designates a file that bundles all .d.ts output. */
+
+    "outDir": "./dist" /* Specify an output folder for all emitted files. */,
+
+    // "removeComments": true,                           /* Disable emitting comments. */
+
+    // "noEmit": true,                                   /* Disable emitting files from a compilation. */
+
+    // "importHelpers": true,                            /* Allow importing helper functions from tslib once per project, instead of including them per-file. */
+
+    // "importsNotUsedAsValues": "remove",               /* Specify emit/checking behavior for imports that are only used for types */
+
+    // "downlevelIteration": true,                       /* Emit more compliant, but verbose and less performant JavaScript for iteration. */
+
+    // "sourceRoot": "",                                 /* Specify the root path for debuggers to find the reference source code. */
+
+    // "mapRoot": "",                                    /* Specify the location where debugger should locate map files instead of generated locations. */
+
+    // "inlineSourceMap": true,                          /* Include sourcemap files inside the emitted JavaScript. */
+
+    // "inlineSources": true,                            /* Include source code in the sourcemaps inside the emitted JavaScript. */
+
+    // "emitBOM": true,                                  /* Emit a UTF-8 Byte Order Mark (BOM) in the beginning of output files. */
+
+    // "newLine": "crlf",                                /* Set the newline character for emitting files. */
+
+    // "stripInternal": true,                            /* Disable emitting declarations that have `@internal` in their JSDoc comments. */
+
+    // "noEmitHelpers": true,                            /* Disable generating custom helper functions like `__extends` in compiled output. */
+
+    // "noEmitOnError": true,                            /* Disable emitting files if any type checking errors are reported. */
+
+    // "preserveConstEnums": true,                       /* Disable erasing `const enum` declarations in generated code. */
+
+    // "declarationDir": "./",                           /* Specify the output directory for generated declaration files. */
+
+
+
+    /* Interop Constraints */
+
+    // "isolatedModules": true,                          /* Ensure that each file can be safely transpiled without relying on other imports. */
+
+    // "allowSyntheticDefaultImports": true,             /* Allow 'import x from y' when a module doesn't have a default export. */
+
+    "esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables `allowSyntheticDefaultImports` for type compatibility. */,
+
+    // "preserveSymlinks": true,                         /* Disable resolving symlinks to their realpath. This correlates to the same flag in node. */
+
+    "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
+
+
+
+    /* Type Checking */
+
+    "strict": true /* Enable all strict type-checking options. */,
+
+    // "noImplicitAny": true,                            /* Enable error reporting for expressions and declarations with an implied `any` type.. */
+
+    // "strictNullChecks": true,                         /* When type checking, take into account `null` and `undefined`. */
+
+    // "strictFunctionTypes": true,                      /* When assigning functions, check to ensure parameters and the return values are subtype-compatible. */
+
+    // "strictBindCallApply": true,                      /* Check that the arguments for `bind`, `call`, and `apply` methods match the original function. */
+
+    // "strictPropertyInitialization": true,             /* Check for class properties that are declared but not set in the constructor. */
+
+    // "noImplicitThis": true,                           /* Enable error reporting when `this` is given the type `any`. */
+
+    // "useUnknownInCatchVariables": true,               /* Type catch clause variables as 'unknown' instead of 'any'. */
+
+    "alwaysStrict": true /* Ensure 'use strict' is always emitted. */,
+
+    // "noUnusedLocals": true /* Enable error reporting when a local variables aren't read. */,
+
+    // "noUnusedParameters": true,                       /* Raise an error when a function parameter isn't read */
+
+    // "exactOptionalPropertyTypes": true,               /* Interpret optional property types as written, rather than adding 'undefined'. */
+
+    "noImplicitReturns": true /* Enable error reporting for codepaths that do not explicitly return in a function. */,
+
+    // "noFallthroughCasesInSwitch": true,               /* Enable error reporting for fallthrough cases in switch statements. */
+
+    "noUncheckedIndexedAccess": true /* Include 'undefined' in index signature results */,
+
+    // "noImplicitOverride": true,                       /* Ensure overriding members in derived classes are marked with an override modifier. */
+
+    // "noPropertyAccessFromIndexSignature": true,       /* Enforces using indexed accessors for keys declared using an indexed type */
+
+    // "allowUnusedLabels": true,                        /* Disable error reporting for unused labels. */
+
+    // "allowUnreachableCode": true,                     /* Disable error reporting for unreachable code. */
+
+
+
+    /* Completeness */
+
+    // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
+
+    "skipLibCheck": true /* Skip type checking all .d.ts files. */
+
+  },
+
+  "include": ["./src/**/*"]
+
+}
+
+./fikeRec.txt
+
+./dist/bin/server.js
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+
+    if (k2 === undefined) k2 = k;
+
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+
+      desc = { enumerable: true, get: function() { return m[k]; } };
+
+    }
+
+    Object.defineProperty(o, k2, desc);
+
+}) : (function(o, m, k, k2) {
+
+    if (k2 === undefined) k2 = k;
+
+    o[k2] = m[k];
+
+}));
+
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+
+}) : function(o, v) {
+
+    o["default"] = v;
+
+});
+
+var __importStar = (this && this.__importStar) || function (mod) {
+
+    if (mod && mod.__esModule) return mod;
+
+    var result = {};
+
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+
+    __setModuleDefault(result, mod);
+
+    return result;
+
+};
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+
+};
+
+Object.defineProperty(exports, "__esModule", { value: true });
+
+require('dotenv').config();
+
+const http = __importStar(require("http"));
+
+const ip_1 = __importDefault(require("ip"));
+
+const app_1 = __importDefault(require("../app"));
+
+const logger_1 = __importDefault(require("../v1/helpers/logger"));
+
+const connectionFile_1 = require("../v1/infrastructure/persistance/database/db_connection/connectionFile");
+
+const urlBase = 'api/v1';
+
+const localIp = ip_1.default.address();
+
+const port = Number(process.env.API_PORT) || 8080;
+
+const server = http.createServer(app_1.default);
+
+// Graceful shutdown
+
+const shutdown = async () => {
+
+    try {
+
+        await (0, connectionFile_1.closeConnection)();
+
+        process.exit(0);
+
+    }
+
+    catch (error) {
+
+        logger_1.default.error('Error during shutdown:', error);
+
+        process.exit(1);
+
+    }
+
+};
+
+server.on('error', async (error) => {
+
+    logger_1.default.error(JSON.stringify(error));
+
+    await shutdown();
+
+    process.exit(1);
+
+});
+
+server.on('listening', async () => {
+
+    if (!process.env.production)
+
+        logger_1.default.info(`app running ... api documentation on localhost:${port} or http://${localIp}:${port}/${urlBase}/doc3/apiDocumentation`);
+
+});
+
+// Setup process handlers
+
+process.on('SIGTERM', shutdown);
+
+process.on('SIGINT', shutdown);
+
+server.listen(port);
+
+./dist/app.js
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+
+};
+
+Object.defineProperty(exports, "__esModule", { value: true });
+
+require('dotenv').config();
+
+const express_1 = __importDefault(require("express"));
+
+const routes_1 = __importDefault(require("./v1/presentation/routes")); // Fixed import path
+
+const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
+
+const v3_1 = require("./v1/helpers/apiDocumentation/v3");
+
+const helmet_1 = __importDefault(require("helmet"));
+
+const cors_1 = __importDefault(require("cors"));
+
+const logger_1 = __importDefault(require("./v1/helpers/logger"));
+
+const app = (0, express_1.default)();
+
+const urlBase = 'api/v1';
+
+if (process.env.NODE_ENV !== 'production') {
+
+    // OpenAPI V3
+
+    app.use(`/${urlBase}/doc3/apiDocumentation`, swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(v3_1.swaggerSpec));
+
+}
+
+app.use((0, helmet_1.default)());
+
+app.use((0, cors_1.default)());
+
+app.use(express_1.default.json());
+
+// Redirect root URL to OpenAPI V3 documentation
+
+app.get('/', (req, res) => {
+
+    return res.redirect(301, `/${urlBase}/doc3/apiDocumentation`); // Changed to 301 Permanent Redirect
+
+});
+
+app.use(`/${urlBase}/projects`, routes_1.default); // Updated to match project endpoints
+
+const handleNotFound = (req, res, next) => {
+
+    if (res.headersSent) {
+
+        return next();
+
+    }
+
+    return res.status(404).json({ message: 'Not Found' });
+
+};
+
+const handleError = (err, req, res) => {
+
+    logger_1.default.error(err.stack);
+
+    let statusCode = 500;
+
+    if (err.name === 'ValidationError')
+
+        statusCode = 400;
+
+    else if (err.name === 'UnauthorizedError')
+
+        statusCode = 401;
+
+    else if (err.name === 'ForbiddenError')
+
+        statusCode = 403;
+
+    else
+
+        ;
+
+    const errorResponse = {
+
+        message: 'Internal Server Error',
+
+        error: process.env.NODE_ENV === 'development' ? err.message : ''
+
+    };
+
+    res.status(statusCode).json(errorResponse);
+
+};
+
+app.use(handleNotFound);
+
+app.use(handleError);
+
+exports.default = app;
+
+./dist/v1/infrastructure/persistance/database/entity.js
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+
+};
+
+var __metadata = (this && this.__metadata) || function (k, v) {
+
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+
+};
+
+Object.defineProperty(exports, "__esModule", { value: true });
+
+exports.ProjectMember = exports.User = exports.Project = void 0;
+
+const typeorm_1 = require("typeorm");
+
+let Project = class Project {
+
+};
+
+__decorate([
+
+    (0, typeorm_1.PrimaryColumn)(),
+
+    __metadata("design:type", Number)
+
+], Project.prototype, "id", void 0);
+
+__decorate([
+
+    (0, typeorm_1.Column)(),
+
+    __metadata("design:type", String)
+
+], Project.prototype, "name", void 0);
+
+__decorate([
+
+    (0, typeorm_1.Column)(),
+
+    __metadata("design:type", String)
+
+], Project.prototype, "created_at", void 0);
+
+Project = __decorate([
+
+    (0, typeorm_1.Entity)('projects')
+
+], Project);
+
+exports.Project = Project;
+
+let User = class User {
+
+};
+
+__decorate([
+
+    (0, typeorm_1.PrimaryColumn)(),
+
+    __metadata("design:type", Number)
+
+], User.prototype, "id", void 0);
+
+__decorate([
+
+    (0, typeorm_1.Column)(),
+
+    __metadata("design:type", String)
+
+], User.prototype, "first_name", void 0);
+
+__decorate([
+
+    (0, typeorm_1.Column)(),
+
+    __metadata("design:type", String)
+
+], User.prototype, "last_name", void 0);
+
+__decorate([
+
+    (0, typeorm_1.Column)(),
+
+    __metadata("design:type", String)
+
+], User.prototype, "created_at", void 0);
+
+User = __decorate([
+
+    (0, typeorm_1.Entity)('users')
+
+], User);
+
+exports.User = User;
+
+let ProjectMember = class ProjectMember {
+
+};
+
+__decorate([
+
+    (0, typeorm_1.PrimaryColumn)(),
+
+    __metadata("design:type", Number)
+
+], ProjectMember.prototype, "project_id", void 0);
+
+__decorate([
+
+    (0, typeorm_1.PrimaryColumn)(),
+
+    __metadata("design:type", Number)
+
+], ProjectMember.prototype, "user_id", void 0);
+
+__decorate([
+
+    (0, typeorm_1.Column)(),
+
+    __metadata("design:type", String)
+
+], ProjectMember.prototype, "created_at", void 0);
+
+ProjectMember = __decorate([
+
+    (0, typeorm_1.Entity)('projects_members')
+
+], ProjectMember);
+
+exports.ProjectMember = ProjectMember;
+
+./dist/v1/infrastructure/persistance/database/index.js
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+
+};
+
+Object.defineProperty(exports, "__esModule", { value: true });
+
+exports.removeProjectMember = exports.addProjectMember = exports.getProjectMembers = void 0;
+
+const connectionFile_1 = require("./db_connection/connectionFile");
+
+const entity_1 = require("./entity");
+
+const logger_1 = __importDefault(require("../../../helpers/logger"));
+
+const getProjectMembers = async (projectId) => {
+
+    const connection = await (0, connectionFile_1.getConnection)();
+
+    const query = `
+
+    SELECT 
+
+      u.id, 
+
+      u.first_name, 
+
+      u.last_name, 
+
+      GROUP_CONCAT(pm2.project_id) AS groups
+
+    FROM projects_members pm
+
+    JOIN users u ON pm.user_id = u.id
+
+    LEFT JOIN projects_members pm2 ON pm2.user_id = u.id
+
+    WHERE pm.project_id = '${projectId}'
+
+    GROUP BY u.id, u.first_name, u.last_name;
+
+  `;
+
+    try {
+
+        const members = await connection.query(query);
+
+        return await members.map((m) => ({
+
+            id: m.id,
+
+            name: `${m.first_name} ${m.last_name}`,
+
+            groups: m.groups.split(',').map((x) => String.fromCharCode(Number(x) + 65))
+
+        }));
+
+    }
+
+    catch (error) {
+
+        logger_1.default.error('Error executing getProjectMembers query:', String(error));
+
+        throw new Error(`Failed to fetch project members: ${error instanceof Error ? error.message : String(error)}`);
+
+    }
+
+};
+
+exports.getProjectMembers = getProjectMembers;
+
+const addProjectMember = async (projectId, userId) => {
+
+    const connection = await (0, connectionFile_1.getConnection)();
+
+    const userRepo = connection.getRepository(entity_1.User);
+
+    const memberRepo = connection.getRepository(entity_1.ProjectMember);
+
+    try {
+
+        const user = await userRepo.findOne({ where: { id: userId } });
+
+        if (!user)
+
+            throw new Error('User not found');
+
+        await memberRepo.insert({
+
+            project_id: projectId,
+
+            user_id: userId,
+
+            created_at: new Date().toISOString()
+
+        });
+
+        return user;
+
+    }
+
+    catch (error) {
+
+        logger_1.default.error('Error adding project member:', error);
+
+        throw new Error(`Failed to add project member: ${error instanceof Error ? error.message : String(error)}`);
+
+    }
+
+};
+
+exports.addProjectMember = addProjectMember;
+
+const removeProjectMember = async (projectId, userId) => {
+
+    const connection = await (0, connectionFile_1.getConnection)();
+
+    const memberRepo = connection.getRepository(entity_1.ProjectMember);
+
+    try {
+
+        const result = await memberRepo.delete({
+
+            project_id: projectId,
+
+            user_id: userId
+
+        });
+
+        if (result.affected === 0) {
+
+            throw new Error('Member not found in this project');
+
+        }
+
+    }
+
+    catch (error) {
+
+        logger_1.default.error('Error removing project member:', error);
+
+        throw new Error(`Failed to remove project member: ${error instanceof Error ? error.message : String(error)}`);
+
+    }
+
+};
+
+exports.removeProjectMember = removeProjectMember;
+
+./dist/v1/infrastructure/persistance/database/index.dto.js
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+
+./dist/v1/infrastructure/persistance/database/db_connection/connectionFile.js
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+
+};
+
+Object.defineProperty(exports, "__esModule", { value: true });
+
+exports.closeConnection = exports.getConnection = void 0;
+
+const path_1 = __importDefault(require("path"));
+
+const typeorm_1 = require("typeorm");
+
+let connection = null;
+
+const getConnectionOptions = async () => {
+
+    const op = {
+
+        type: 'sqlite',
+
+        database: path_1.default.join(__dirname, '../../../../../../data/projects.db'),
+
+        entities: [path_1.default.join(__dirname, '../entity.*s')],
+
+        synchronize: false,
+
+        logging: process.env.NODE_ENV !== 'production'
+
+    };
+
+    return op;
+
+};
+
+const getConnection = async () => {
+
+    if (connection && connection.isInitialized)
+
+        return connection;
+
+    const options = await getConnectionOptions();
+
+    connection = new typeorm_1.DataSource(options);
+
+    await connection.initialize();
+
+    return connection;
+
+};
+
+exports.getConnection = getConnection;
+
+const closeConnection = async () => {
+
+    if (connection && connection.isInitialized) {
+
+        await connection.destroy();
+
+        connection = null;
+
+    }
+
+};
+
+exports.closeConnection = closeConnection;
+
+./dist/v1/helpers/logger/index.js
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+
+    if (k2 === undefined) k2 = k;
+
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+
+      desc = { enumerable: true, get: function() { return m[k]; } };
+
+    }
+
+    Object.defineProperty(o, k2, desc);
+
+}) : (function(o, m, k, k2) {
+
+    if (k2 === undefined) k2 = k;
+
+    o[k2] = m[k];
+
+}));
+
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+
+}) : function(o, v) {
+
+    o["default"] = v;
+
+});
+
+var __importStar = (this && this.__importStar) || function (mod) {
+
+    if (mod && mod.__esModule) return mod;
+
+    var result = {};
+
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+
+    __setModuleDefault(result, mod);
+
+    return result;
+
+};
+
+Object.defineProperty(exports, "__esModule", { value: true });
+
+const winston_1 = __importStar(require("winston"));
+
+const logger = winston_1.default.createLogger({
+
+    format: winston_1.default.format.combine(winston_1.default.format.errors({ stack: true }), // Important for error handling
+
+    winston_1.default.format.timestamp(), winston_1.default.format.printf(({ level, message, timestamp, stack }) => {
+
+        var _a;
+
+        let logMessage = `${timestamp} ${level}: ${message}`;
+
+        if (typeof stack === 'string') {
+
+            const stackLines = stack.split('\n');
+
+            // The second line of the stack trace typically contains the file and line number
+
+            const errorLocation = ((_a = stackLines[1]) === null || _a === void 0 ? void 0 : _a.trim()) || 'Unknown location';
+
+            logMessage += `\n[${errorLocation}]`;
+
+        }
+
+        else if (stack) {
+
+            // Handle cases where stack exists but is not a string (e.g., custom error objects)
+
+            logMessage += '\n[Stack trace unavailable]';
+
+        }
+
+        return logMessage;
+
+    })),
+
+    exceptionHandlers: [new winston_1.transports.File({ filename: './logs/exceptions.log' })]
+
+});
+
+if (process.env.NODE_ENV === 'production') {
+
+    logger.level = 'error';
+
+    logger.add(new winston_1.transports.File({
+
+        level: 'error',
+
+        filename: './logs/error.log',
+
+        handleRejections: true
+
+    }));
+
+}
+
+else {
+
+    logger.level = process.env.LOGLEVEL || 'debug';
+
+    logger.add(new winston_1.transports.Console());
+
+}
+
+exports.default = logger;
+
+./dist/v1/helpers/apiDocumentation/v3/index.js
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+
+exports.swaggerSpec = void 0;
+
+exports.swaggerSpec = {
+
+    openapi: '3.0.3',
+
+    info: {
+
+        title: 'Project Members API',
+
+        description: 'A REST API for managing project members, including recursive group membership retrieval.',
+
+        version: '1.0.0',
+
+        contact: {
+
+            name: 'Gary Johnson',
+
+            email: 'gary.johnson.freelance@gmail.com',
+
+            url: 'https://github.com/gary003'
+
+        },
+
+        license: {
+
+            name: 'MIT',
+
+            url: 'https://opensource.org/licenses/MIT'
+
+        }
+
+    },
+
+    servers: [
+
+        {
+
+            url: 'http://localhost:8080/api/v1',
+
+            description: 'Local development server'
+
+        }
+
+    ],
+
+    paths: {
+
+        '/projects/{id}/members': {
+
+            get: {
+
+                tags: ['project'],
+
+                summary: 'Retrieve project members recursively',
+
+                description: 'Fetches a flattened list of members for a specific project, including users and members of nested groups (up to 5 levels).',
+
+                operationId: 'getProjectMembers',
+
+                parameters: [
+
+                    {
+
+                        name: 'id',
+
+                        in: 'path',
+
+                        required: true,
+
+                        description: 'The ID of the project to retrieve members for.',
+
+                        schema: {
+
+                            type: 'integer',
+
+                            example: 1
+
+                        }
+
+                    }
+
+                ],
+
+                responses: {
+
+                    '200': {
+
+                        description: 'A list of project members, including their group affiliations.',
+
+                        content: {
+
+                            'application/json': {
+
+                                schema: {
+
+                                    type: 'array',
+
+                                    items: {
+
+                                        $ref: '#/components/schemas/Member'
+
+                                    }
+
+                                },
+
+                                example: [
+
+                                    { id: 1, name: 'John Doe', groups: [] },
+
+                                    { id: 2, name: 'Jane Smith', groups: ['A', 'B'] },
+
+                                    { id: 3, name: 'Alice Johnson', groups: ['B'] },
+
+                                    { id: 4, name: 'Ben Stevenson', groups: ['A'] }
+
+                                ]
+
+                            }
+
+                        }
+
+                    },
+
+                    '400': {
+
+                        description: 'Bad request (e.g., invalid project ID).',
+
+                        content: {
+
+                            'application/json': {
+
+                                schema: {
+
+                                    $ref: '#/components/schemas/Error'
+
+                                },
+
+                                example: {
+
+                                    message: 'Invalid project ID'
+
+                                }
+
+                            }
+
+                        }
+
+                    },
+
+                    '500': {
+
+                        description: 'Server error during member retrieval.',
+
+                        content: {
+
+                            'application/json': {
+
+                                schema: {
+
+                                    $ref: '#/components/schemas/Error'
+
+                                },
+
+                                example: {
+
+                                    message: 'Failed to fetch project members: Database error'
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    },
+
+    components: {
+
+        schemas: {
+
+            Member: {
+
+                type: 'object',
+
+                properties: {
+
+                    id: {
+
+                        type: 'integer',
+
+                        description: 'The unique ID of the member.',
+
+                        example: 1
+
+                    },
+
+                    name: {
+
+                        type: 'string',
+
+                        description: 'The full name of the member.',
+
+                        example: 'John Doe'
+
+                    },
+
+                    groups: {
+
+                        type: 'array',
+
+                        description: 'The names of groups from which the member was included.',
+
+                        items: {
+
+                            type: 'string'
+
+                        },
+
+                        example: ['A', 'B']
+
+                    }
+
+                },
+
+                required: ['id', 'name', 'groups']
+
+            },
+
+            Error: {
+
+                type: 'object',
+
+                properties: {
+
+                    message: {
+
+                        type: 'string',
+
+                        description: 'A description of the error.'
+
+                    }
+
+                },
+
+                required: ['message']
+
+            }
+
+        }
+
+    }
+
+};
+
+./dist/v1/helpers/apiDocumentation/v3/docOptions.js
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+
+exports.openApiOptions = void 0;
+
+exports.openApiOptions = {
+
+    customSiteTitle: 'API Backend Template - OpenAPI 3.0 (Dark Theme)',
+
+    customCss: `
+
+.swagger-ui,
+
+    .swagger-ui .wrapper { background-color: #f5f5f5; color: #212121; }
+
+    .swagger-ui .topbar { background-color: #3f51b5; color: #ffffff; }
+
+    .swagger-ui .topbar a { color: #ffffff; }
+
+    .swagger-ui .scheme-container { background-color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+
+    .swagger-ui .opblock-tag { color: #ffffff; background-color: #3f51b5; }
+
+    .swagger-ui .opblock { background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 4px; }
+
+    .swagger-ui .opblock .opblock-summary { background-color: #fafafa; }
+
+    .swagger-ui .opblock .opblock-summary-method { color: #3f51b5; font-weight: bold; }
+
+    .swagger-ui .opblock .opblock-summary-path { color: #616161; }
+
+    .swagger-ui .opblock-body pre { background-color: #eceff1; color: #212121; }
+
+    .swagger-ui .btn { background-color: #3f51b5; color: #ffffff; border-radius: 4px; }
+
+    .swagger-ui .btn:hover { background-color: #5c6bc0; }
+
+    .swagger-ui input[type="text"], .swagger-ui textarea { background-color: #ffffff; color: #212121; border: 1px solid #e0e0e0; border-radius: 4px; }
+
+  `,
+
+    customfavIcon: '/favicon.ico',
+
+    swaggerOptions: {
+
+        defaultModelsExpandDepth: 2,
+
+        displayOperationId: true,
+
+        docExpansion: 'list',
+
+        filter: true,
+
+        tryItOutEnabled: true,
+
+        displayRequestDuration: true
+
+    },
+
+    explorer: true
+
+};
+
+./dist/v1/services/index.js
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+
+exports.deleteProjectMember = exports.createProjectMember = exports.fetchProjectMembers = void 0;
+
+const database_1 = require("../infrastructure/persistance/database/");
+
+const fetchProjectMembers = async (projectId) => {
+
+    try {
+
+        const members = await (0, database_1.getProjectMembers)(projectId);
+
+        return members;
+
+    }
+
+    catch (error) {
+
+        throw new Error(`Failed to fetch project members: ${error instanceof Error ? error.message : String(error)}`);
+
+    }
+
+};
+
+exports.fetchProjectMembers = fetchProjectMembers;
+
+const createProjectMember = async (projectId, userId) => {
+
+    try {
+
+        const user = await (0, database_1.addProjectMember)(projectId, userId);
+
+        return {
+
+            id: user.id,
+
+            name: `${user.first_name} ${user.last_name}`,
+
+            groups: []
+
+        };
+
+    }
+
+    catch (error) {
+
+        throw new Error(`Failed to create project member: ${error instanceof Error ? error.message : String(error)}`);
+
+    }
+
+};
+
+exports.createProjectMember = createProjectMember;
+
+const deleteProjectMember = async (projectId, userId) => {
+
+    try {
+
+        await (0, database_1.removeProjectMember)(projectId, userId);
+
+    }
+
+    catch (error) {
+
+        throw new Error(`Failed to delete project member: ${error instanceof Error ? error.message : String(error)}`);
+
+    }
+
+};
+
+exports.deleteProjectMember = deleteProjectMember;
+
+./dist/v1/presentation/routes/index.js
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+
+};
+
+Object.defineProperty(exports, "__esModule", { value: true });
+
+const express_1 = __importDefault(require("express"));
+
+const services_1 = require("../../services");
+
+const error_dto_1 = require("./error.dto");
+
+const router = express_1.default.Router();
+
+router.get('/:id/members', async (req, res) => {
+
+    try {
+
+        const projectId = parseInt(req.params.id);
+
+        if (isNaN(projectId))
+
+            throw new Error('Invalid project ID');
+
+        const members = await (0, services_1.fetchProjectMembers)(projectId);
+
+        return res.status(200).json(members);
+
+    }
+
+    catch (error) {
+
+        return res.status(400).json({ errorPresentation: String(error) });
+
+    }
+
+});
+
+router.post('/:id/members', async (req, res) => {
+
+    try {
+
+        const projectId = parseInt(req.params.id);
+
+        const { user_ids } = req.body;
+
+        if (isNaN(projectId))
+
+            throw new Error('Invalid project ID');
+
+        if (!Array.isArray(user_ids) || user_ids.length === 0) {
+
+            throw new Error('Invalid user_ids');
+
+        }
+
+        const member = await (0, services_1.createProjectMember)(projectId, user_ids[0]);
+
+        return res.status(201).json(member);
+
+    }
+
+    catch (err) {
+
+        return res.status(400).json({ presentationError: String(err) });
+
+    }
+
+});
+
+router.delete('/:projectId/members/:userId', async (req, res) => {
+
+    try {
+
+        const projectId = parseInt(req.params.projectId);
+
+        const userId = parseInt(req.params.userId);
+
+        if (isNaN(projectId) || isNaN(userId))
+
+            throw new Error('Invalid ID');
+
+        await (0, services_1.deleteProjectMember)(projectId, userId);
+
+        return res.status(204).send();
+
+    }
+
+    catch (error) {
+
+        return res.status(400).json({ message: error_dto_1.errorAPIProject.invalidId.message, presentationError: String(error) });
+
+    }
+
+});
+
+exports.default = router;
+
+./dist/v1/presentation/routes/error.dto.js
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+
+exports.errorAPIProject = void 0;
+
+exports.errorAPIProject = {
+
+    invalidId: {
+
+        message: 'Invalid project or user ID provided',
+
+        code: 'INVALID_ID',
+
+        status: 400
+
+    },
+
+    invalidInput: {
+
+        message: 'Invalid input data provided',
+
+        code: 'INVALID_INPUT',
+
+        status: 400
+
+    },
+
+    projectNotFound: {
+
+        message: 'Project not found',
+
+        code: 'PROJECT_NOT_FOUND',
+
+        status: 404
+
+    },
+
+    userNotFound: {
+
+        message: 'User not found',
+
+        code: 'USER_NOT_FOUND',
+
+        status: 404
+
+    },
+
+    memberAlreadyExists: {
+
+        message: 'User is already a member of this project',
+
+        code: 'MEMBER_ALREADY_EXISTS',
+
+        status: 409
+
+    },
+
+    memberNotFound: {
+
+        message: 'Member not found in this project',
+
+        code: 'MEMBER_NOT_FOUND',
+
+        status: 404
+
+    },
+
+    internalServerError: {
+
+        message: 'Internal server error',
+
+        code: 'INTERNAL_SERVER_ERROR',
+
+        status: 500
+
+    }
+
+};
+
+./.prettierrc
+
+{
+
+  "semi": false,
+
+  "singleQuote": true,
+
+  "trailingComma": "none",
+
+  "printWidth": 180,
+
+  "tabWidth": 2,
+
+  "useTabs": false,
+
+  "jsxSingleQuote": true,
+
+  "arrowParens": "always",
+
+  "endOfLine": "auto"
+
+}
+
+./.gitignore
+
+# Logs
+
+logs
+
+*.log
+
+npm-debug.log*
+
+yarn-debug.log*
+
+yarn-error.log*
+
+lerna-debug.log*
+
+
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+
+
+# Runtime data
+
+pids
+
+*.pid
+
+*.seed
+
+*.pid.lock
+
+
+
+# clinic supervision load test
+
+.clinic
+
+
+
+# Directory for instrumented libs generated by jscoverage/JSCover
+
+lib-cov
+
+
+
+# Coverage directory used by tools like istanbul
+
+coverage
+
+*.lcov
+
+
+
+# nyc test coverage
+
+.nyc_output
+
+
+
+# Grunt intermediate storage (https://gruntjs.com/creating-plugins#storing-task-files)
+
+.grunt
+
+
+
+# Bower dependency directory (https://bower.io/)
+
+bower_components
+
+
+
+# node-waf configuration
+
+.lock-wscript
+
+
+
+# Compiled binary addons (https://nodejs.org/api/addons.html)
+
+build/Release
+
+
+
+# Dependency directories
+
+node_modules/
+
+jspm_packages/
+
+
+
+# TypeScript v1 declaration files
+
+typings/
+
+
+
+# TypeScript cache
+
+*.tsbuildinfo
+
+
+
+# Optional npm cache directory
+
+.npm
+
+
+
+# Optional eslint cache
+
+.eslintcache
+
+
+
+# Microbundle cache
+
+.rpt2_cache/
+
+.rts2_cache_cjs/
+
+.rts2_cache_es/
+
+.rts2_cache_umd/
+
+
+
+# Optional REPL history
+
+.node_repl_history
+
+
+
+# Output of 'npm pack'
+
+*.tgz
+
+
+
+# Yarn Integrity file
+
+.yarn-integrity
+
+
+
+# dotenv environment variables file
+
+.env
+
+.env.test
+
+
+
+# parcel-bundler cache (https://parceljs.org/)
+
+.cache
+
+
+
+# Next.js build output
+
+.next
+
+
+
+# Nuxt.js build / generate output
+
+.nuxt
+
+dist
+
+
+
+# Gatsby files
+
+.cache/
+
+# Comment in the public line in if your project uses Gatsby and *not* Next.js
+
+# https://nextjs.org/blog/next-9-1#public-directory-support
+
+# public
+
+
+
+# vuepress build output
+
+.vuepress/dist
+
+
+
+# Serverless directories
+
+.serverless/
+
+
+
+# FuseBox cache
+
+.fusebox/
+
+
+
+# DynamoDB Local files
+
+.dynamodb/
+
+
+
+# TernJS port file
+
+.tern-port
+
+./LICENSE
+
+MIT License
+
+
+
+Copyright (c) 2025 Gary Johnson
+
+
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+
+of this software and associated documentation files (the "Software"), to deal
+
+in the Software without restriction, including without limitation the rights
+
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+
+copies of the Software, and to permit persons to whom the Software is
+
+furnished to do so, subject to the following conditions:
+
+
+
+The above copyright notice and this permission notice shall be included in all
+
+copies or substantial portions of the Software.
+
+
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+
+SOFTWARE.
+
+./.git/config
+
+[core]
+
+	repositoryformatversion = 0
+
+	filemode = true
+
+	bare = false
+
+	logallrefupdates = true
+
+[remote "origin"]
+
+	url = git@github.com:gary003/test_asynchrone_dev_backend.git
+
+	fetch = +refs/heads/*:refs/remotes/origin/*
+
+[branch "master"]
+
+	remote = origin
+
+	merge = refs/heads/master
+
+./.git/COMMIT_EDITMSG
+
+fix docker pb
+
+
+
+# Veuillez saisir le message de validation pour vos modifications. Les lignes
+
+# commen√ßant par '#' seront ignor√©es, et un message vide abandonne la validation.
+
+#
+
+# Date :       Thu Mar 27 14:24:03 2025 +0700
+
+#
+
+# Sur la branche master
+
+# Votre branche est √† jour avec 'origin/master'.
+
+#
+
+# Modifications qui seront valid√©es :
+
+#	modifi√©¬†:         Dockerfile
+
+#	modifi√©¬†:         README.md
+
+#	nouveau fichier¬†: data/.gitkeep
+
+#	renomm√©¬†:         projects.db -> data/projects.db
+
+#	modifi√©¬†:         package.json
+
+#	modifi√©¬†:         src/v1/infrastructure/persistance/database/db_connection/connectionFile.ts
+
+#	modifi√©¬†:         src/v1/infrastructure/persistance/database/index.ts
+
+#	modifi√©¬†:         src/v1/presentation/routes/index.ts
+
+#	modifi√©¬†:         tests/integration/presentation_routes.test.ts
+
+#
+
+./.git/packed-refs
+
+# pack-refs with: peeled fully-peeled sorted 
+
+9377f0691de9e2b6ccdeaecac54544428d4896e8 refs/remotes/origin/master
+
+./.git/index
+
+DIRC      g‰˛p)ïúÑg‰˛p)ïúÑ  ˛º»  Å§  Ë  Ë   Ç€ÁÀïâMî+q¿˙*™:óà¶9 
+
+.c8rc.json        g‰˛p)ïúÑg‰˛p)ïúÑ  ˛ΩÚ  Å§  Ë  Ë  r›π›"3ˆ2¢’¥üﬁe3„+“í≠ 
+
+.gitignore        gÂq∆HûgÂq∆Hû  ˛æ(  Å§  Ë  Ë   Ã^õ∞¡‡§d^n`‹*1nT1ê(E .prettierrc       gÂl.')EügÂl.')Eü  ˛æ)  Å§  Ë  Ë  ⁄®;†à`Ï·ö≈JÃ2EDRR3 
+
+Dockerfile        g‰˛p)ïúÑg‰˛p)ïúÑ  ˛æ-  Å§  Ë  Ë  -¨án9∂åTãò™ÿOºÛèœ¢Ó LICENSE   gÂ~ﬁ::gÂ~ﬁ::  ˛æ1  Å§  Ë  Ë  +ùaˆR¶–ÿqÂ5ò˝g04â{Q 	README.md g‰˛p)ïúÑg‰˛p)ïúÑ  ˛æ5  Å§  Ë  Ë    Êù‚õ≤—÷CKã)ÆwZÿ¬‰åSë data/.gitkeep     gÂ…úÇ‘gÂ…úÇ‘  ˛æ7  Å§  Ë  Ë   gy∏AÛ};i˝\Ñ¿ï# data/projects.db  g‰˛p)§ﬁπg‰˛p)§ﬁπ  ˛æ8  Å§  Ë  Ë  äNÌP<*ÔŒ{nŸöM8D©ò eslint.config.mjs gÂp”ÄgÂp”Ä  ˛æ9  Å§  Ë  Ë bÿZe˙ˇ'®8û›O r≥g_¬ package-lock.json gÂq˙!øêﬁgÂq˙!øêﬁ  ˛æ:  Å§  Ë  Ë  âHôÉ)ß≥VÔc‘óÙ`O‰)T package.json      g‰˛p)√c%g‰˛p)√c%  ˛æ<  Å§  Ë  Ë  GÓ•rC¨o[{UﬂjÓ'–Ëöµ specs.md  g‰˛p)√c%g‰˛p)√c%  ˛æ\  Å§  Ë  Ë  {ë,~ÁZWπˆ∫rÚmõ˜ü_ºM 
+
+src/app.ts        g‰˛p)√c%g‰˛p)√c%  ˛æ^  Å§  Ë  Ë  ,fZ‘@˛àˆR+Ñ[ü€0Ÿ¯6 src/bin/server.ts g‰˛p)“•Zg‰˛p)“•Z  ˛æg  Å§  Ë  Ë  %#\∂õHø»7¨1ı?Ø",Öè¯Ä 0src/v1/helpers/apiDocumentation/v3/docOptions.ts  g‰˛p)“•Zg‰˛p)“•Z  ˛æh  Å§  Ë  Ë  LÌå›ù˝â2ˆí?a¨1)Af‚ +src/v1/helpers/apiDocumentation/v3/index.ts       g‰˛p)“•Zg‰˛p)“•Z  ˛æl  Å§  Ë  Ë   íœ+9ÅuêƒÈMÈ8ì0X89\ src/v1/helpers/logger/index.ts    g‰˛p)“•Zg‰˛p)“•Z  ˛æÍ  Å§  Ë  Ë  utS‘ï+∫ß∫e+µHÍîIÍá*« Jsrc/v1/infrastructure/persistance/database/db_connection/connectionFile.ts        g‰˛p)“•Zg‰˛p)“•Z  ˛æÎ  Å§  Ë  Ë  'hò¯r:j;DZ‚"°R¢ 4src/v1/infrastructure/persistance/database/entity.ts      g‰˛p)“•Zg‰˛p)“•Z  ˛æÌ  Å§  Ë  Ë   rvá~îÁj–(√‘≠≥jÜﬁ«I 7src/v1/infrastructure/persistance/database/index.dto.ts   gÂÉX!âgÂÉX!â  ˛æ  Å§  Ë  Ë  	ï˚FÛÓ≈E∞rîˆ?éq„SOö‹9 3src/v1/infrastructure/persistance/database/index.ts       g‰˛p)“•Zg‰˛p)“•Z  ˛æ˛  Å§  Ë  Ë  åΩ@!0ÀlßÁxhdõ`å>/÷w 'src/v1/presentation/routes/error.dto.ts   g‰˛p)“•Zg‰˛p)“•Z  ˛æˇ  Å§  Ë  Ë  -<∑ù[FÒ˛–X÷√Hèlw…≈+ #src/v1/presentation/routes/index.ts       g‰˛p)“•Zg‰˛p)“•Z  ˛ø  Å§  Ë  Ë  lö√àæ9íx‰›eê2q‰Â˛- src/v1/services/index.ts  gÂ¿-3NgÂ¿-3N  ˛ø  Å§  Ë  Ë  ËÚ{=Ñˇi5πÓ¬≈ÙÜaŸq -tests/integration/presentation_routes.test.ts     g‰˛p)“•Zg‰˛p)“•Z  ˛ø  Å§  Ë  Ë  (Õ†r=Ù2IÖŒØf´Éh‡NVû•¶ tsconfig.json     TREE  H 26 3
+
+«›K)Èo´$.&ôD1≠'ç
+
+`src 12 2
+
+á}$”çæ%s∑9Àj?ë´†‘}ˆv1 10 4
+
+@Ëå[ı–:˛ﬂGÊ‚És…ëhelpers 3 2
+
+≥√tdˆïbFo¯ÔgØäÍI_logger 1 0
+
+„H§V1,åRj+∫§›:àºu4apiDocumentation 2 1
+
+y¥µ
+
+Gãâù2ñÿåG^]í»Ç”v3 2 0
+
+Ô˘ç¶QÇÕ´>>Ì2…jƒáùservices 1 0
+
+Éıjw∑-â¯'Öü<á.^¬tSpresentation 2 1
+
+â˜=ºúÑPp++ë/—¶	ﬂÈxroutes 2 0
+
+-6˝ªcB€3•wéßïzÌ“c[infrastructure 4 1
+
+ﬁPHi›AyÇ4ˆÒ≤÷TﬂñÓLÑpersistance 4 1
+
+≠5&n0U÷úÊ|ëUFªndatabase 4 1
+
+¯!fº‡Ú0ÁùgeÜÒ^…ˇÖdb_connection 1 0
+
+f1£HI8y¥ #∞n(zF≠S|∆bin 1 0
+
+3¡Ÿˇ*Ìw∏3ˆELˆ»äÚdata 2 0
+
+ÿísâs√˙0’úŒ%›8=Ó‡µπtests 1 1
+
+¡¬;Ë®2/J¿ºïÆÄh¡Ìë6O7integration 1 0
+
+ä‚†˛M˘"∂ı∂LKÍN˚5ÆIÒª¡ŸıÖÓñB±çÿ8˙ã•æ·./.git/description
+
+Unnamed repository; edit this file 'description' to name the repository.
+
+./.git/HEAD
+
+ref: refs/heads/master
+
+./data/projects.db
+
+SQLite format 3   @     3                                                               3 .r¢) µ Fµ/põõõõõõ                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 Å7	--Ç!tableprojects_membersprojects_members
+
+CREATE TABLE "projects_members" ("project_id" bigint NOT NULL,"user_id" bigint NOT NULL DEFAULT 'NULL', PRIMARY KEY (project_id, user_id))?
+
+S- indexsqlite_autoinÇq--Ötableprojects_membersprojects_membersCREATE TABLE "projects_members" (
+
+	"project_id" integer NOT NULL,
+
+	"user_id" integer NOT NULL,
+
+	"created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+	PRIMARY KEY (project_id, user_id),
+
+	FOREIGN KEY (project_id) REFERENCES projects (id) ON DELETE CASCADE,
+
+	FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+
+)   Q+?S- indexsqlite_autoindex_projects_members_1projects_membersÅSÉtableusersusersCREATE TABLE "users" ("id" integer, "first_name" text NOT NULL DEFAULT '', "last_name" text NOT NULL DEFAULT '', "created_at" datetime NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (id))Å7ÇAtableprojectsprojectsCREATE TABLE "projects" ("id" integer NOT NULL,"name" text NOT NULL DEFAULT '',"created_at" datetime NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (id))Ÿ a‚∫úa                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                3testy2025-03-26 06:59:38 3Amet2025-02-26 13:28:26 3Dolor2025-02-26 13:27:21 3Ipsum2025-02-26 13:27:155   	)3Inf 3Lorem2025-02-26 13:26:53   „    ˚ıÔÈ„Ã¢zV2È√†xU2	‰ªñnF!˚’≠áb9
+
+Ï
+
+«
+
+ü
+
+v
+
+N
+
+(
+
+	›	π	ì	j	E	˘œ©Ö_<…§xT,‹µèhCÙŒ£yR.„ΩótP( ◊∂çiCıŒßÇ\5ÌƒùxT* ﬁ            #e 3LeliaLegros2025-02-26 13:09:02%d 3HymanBergnaum2025-02-26 13:09:02(c 3MerrittKertzmann2025-02-26 13:09:02"b 3TierraHaag2025-02-26 13:09:02#a 3ChrisBrekke2025-02-26 13:09:02%` 3DylanConnelly2025-02-26 13:09:02'_ 3SydneeJaskolski2025-02-26 13:09:02#^ 3LowellHaley2025-02-26 13:09:02!] 3FordStark2025-02-26 13:09:02%\ 3LouieBaumbach2025-02-26 13:09:02$[ 3MacyLubowitz2025-02-26 13:09:02#Z 3RosalynYost2025-02-26 13:09:02%Y 3FerminCollier2025-02-26 13:09:02%X 3LuellaZboncak2025-02-26 13:09:02#W 3YazminRunte2025-02-26 13:09:02'V 3NorbertWeissnat2025-02-26 13:09:02$U 3MargotMiller2025-02-26 13:09:02"T 3DannyWolff2025-02-26 13:09:02'S !3MargaretteSipes2025-02-26 13:09:02R 3IvaKihn2025-02-26 13:09:02'Q 3DonatoBashirian2025-02-26 13:09:02&P 3DelbertD'Amore2025-02-26 13:09:02&O 3ColbyAufderhar2025-02-26 13:09:02"N 3KacieKulas2025-02-26 13:09:02!M 3CaleBruen2025-02-26 13:09:02$L 3MaryseSkiles2025-02-26 13:09:02$K 3DillonBrekke2025-02-26 13:09:02#J 3LeonoraMraz2025-02-26 13:09:02$I 3FrancisGrant2025-02-26 13:09:02"H 3EmilieRoob2025-02-26 13:09:02%G 3DomingoTurner2025-02-26 13:09:02(F !3AmparoSchowalter2025-02-26 13:09:02)E 3ChristopWilderman2025-02-26 13:09:02$D 3DollyBartell2025-02-26 13:09:02&C 3LucileReynolds2025-02-26 13:09:02%B 3EdwinaKilback2025-02-26 13:09:02#A 3MarleyLynch2025-02-26 13:09:02%@ 3JaylinEffertz2025-02-26 13:09:02$? 3CareyQuigley2025-02-26 13:09:02%> 3CarliTremblay2025-02-26 13:09:02'= 3MadonnaNikolaus2025-02-26 13:09:02%< 3QuincyTrantow2025-02-26 13:09:02&; 3MarcelinoMayer2025-02-26 13:09:02": 3RaulTorphy2025-02-26 13:09:02*9 !3VictoriaGusikowski2025-02-26 13:09:02#8 3BaileyFrami2025-02-26 13:09:02%7 3AdrielAbshire2025-02-26 13:09:02#6 3CelineTowne2025-02-26 13:09:02%5 3SantiagoTowne2025-02-26 13:09:02!4 3RetaWeber2025-02-26 13:09:02$3 3VerniceFerry2025-02-26 13:09:02"2 3AsaSchmitt2025-02-26 13:09:02$1 3ClovisSpinka2025-02-26 13:09:02(0 3CrystelRosenbaum2025-02-26 13:09:02"/ 3AlbinaMraz2025-02-26 13:09:02&. 3CathrineJewess2025-02-26 13:09:02#- 3MarionSipes2025-02-26 13:09:02', 3MarceloSchaefer2025-02-26 13:09:02$+ 3RossieSchumm2025-02-26 13:09:02"* 3MyaTillman2025-02-26 13:09:02%) 3CorneliusKing2025-02-26 13:09:02"( 3RosaLittel2025-02-26 13:09:02$' 3MaryTurcotte2025-02-26 13:09:02&& !3CristopherRath2025-02-26 13:09:02'% 3NorvalGulgowski2025-02-26 13:09:02&$ 3KristoferKozey2025-02-26 13:09:02## 3AdamWindler2025-02-26 13:09:02%" 3WaltonMonahan2025-02-26 13:09:02$! 3SavannahLowe2025-02-26 13:09:02'  !3AlexandreaO'Kon2025-02-26 13:09:02# 3BobbyErnser2025-02-26 13:09:02$ 3LurlineMayer2025-02-26 13:09:02& 3GustaveZiemann2025-02-26 13:09:02$ 3StantonHilll2025-02-26 13:09:02$ 3MckennaLynch2025-02-26 13:09:02# 3MarcusKulas2025-02-26 13:09:02& 3XavierMosciski2025-02-26 13:09:02& !3MarjolaineHuel2025-02-26 13:09:02# 3OdessaLesch2025-02-26 13:09:02' 3WillardBogisich2025-02-26 13:09:02# 3WavaLabadie2025-02-26 13:09:02' 3MatildaAnderson2025-02-26 13:09:02! 3MiloEmard2025-02-26 13:09:02! 3MaeveKris2025-02-26 13:09:02& 3JeremieMcGlynn2025-02-26 13:09:02! 3MiloTromp2025-02-26 13:09:02$ 3CletusHammes2025-02-26 13:09:02$ 3RichieStokes2025-02-26 13:09:02! 3GeneDavis2025-02-26 13:09:02" 3PietroBins2025-02-26 13:09:02" 3NeilBrekke2025-02-26 13:09:02&
+
+ 3ShanelEichmann2025-02-26 13:09:02(	 3AbigayleKshlerin2025-02-26 13:09:02% 3IsobelLeannon2025-02-26 13:09:02! 3LiaHeller2025-02-26 13:09:02# 3ChloeDooley2025-02-26 13:09:02) !3JordaneCartwright2025-02-26 13:09:02& 3MireilleLittle2025-02-26 13:09:02( 3RebekahDickinson2025-02-26 13:08:51% 3HelmerMueller2025-02-26 13:08:51    	Én   É   Ç*   
+
+ÅH   e   Ë    ˙ÙÓËC(ÛŸø§ânT: Íœ¥ô~cH-¯ﬁ√®étZ@%’∫üÖjO5 
+
+Ê
+
+Ã
+
+±
+
+ó
+
+|
+
+a
+
+G
+
+,
+
+	˜	‹	¬	ß	å	q	V	;	 	Íœ¥ödJ/¯›¡•âmQ6˛‚«¨êtX<!ÈÕ±ñz^B&Ô”∑úÄdI-ıŸΩ°ÜlP4˛‚∆™érU8˛·ƒßãnQ5                       Å32025-02-26 13:34:40Å
+
+3 ƒ2025-02-26 13:34:40Å	3\2025-02-26 13:34:40Å3T2025-02-26 13:34:40Å3 °2025-02-26 13:34:40Å3€2025-02-26 13:34:40Å3£2025-02-26 13:34:40Å32025-02-26 13:34:40Å3 ¢2025-02-26 13:34:40Å3 è2025-02-26 13:34:40Å3:2025-02-26 13:34:40Å 3F2025-02-26 13:34:403 Á2025-02-26 13:34:40~3 ¯2025-02-26 13:34:40}3Ù2025-02-26 13:34:40|3
+
+2025-02-26 13:34:40{3N2025-02-26 13:34:40z3)2025-02-26 13:34:40y342025-02-26 13:34:40x3Å2025-02-26 13:34:40w	32025-02-26 13:34:40v3;2025-02-26 13:34:40u3|2025-02-26 13:34:40t3µ2025-02-26 13:34:40s3Y2025-02-26 13:34:40r3¬2025-02-26 13:34:40q3,2025-02-26 13:34:40p3 ⁄2025-02-26 13:34:40o3	2025-02-26 13:34:40n3x2025-02-26 13:34:40m3Ç2025-02-26 13:34:40l352025-02-26 13:34:40k3<2025-02-26 13:34:40j3 ø2025-02-26 13:34:40i3i2025-02-26 13:34:40h3L2025-02-26 13:34:40g32025-02-26 13:34:40f3Û2025-02-26 13:34:40e3 «2025-02-26 13:34:40d3 ‡2025-02-26 13:34:40c32025-02-26 13:34:40b32025-02-26 13:34:40a3 ¶2025-02-26 13:34:40`3 2025-02-26 13:34:40_3 »2025-02-26 13:34:40^3M2025-02-26 13:34:40]3 Ë2025-02-26 13:34:40\3 ≥2025-02-26 13:34:40[3 ´2025-02-26 13:34:40Z3)2025-02-26 13:34:40Y32025-02-26 13:34:40X3r2025-02-26 13:34:40W3 ê2025-02-26 13:34:40V3 ù2025-02-26 13:34:40U32025-02-26 13:34:40T3g2025-02-26 13:34:40S3^2025-02-26 13:34:40R3 ò2025-02-26 13:34:40Q352025-02-26 13:34:40P3 £2025-02-26 13:34:40O3U2025-02-26 13:34:40N32025-02-26 13:34:40M32025-02-26 13:34:40L	3 ˘2025-02-26 13:33:07K	3 ‚2025-02-26 13:33:07J	32025-02-26 13:33:07I	3©2025-02-26 13:33:07H	3J2025-02-26 13:33:07G	3g2025-02-26 13:33:07F	3°2025-02-26 13:33:07E	32025-02-26 13:33:07D	3ç2025-02-26 13:33:07C	352025-02-26 13:33:07B	3 €2025-02-26 13:33:07A	3®2025-02-26 13:33:07@	3 Á2025-02-26 13:33:07?	392025-02-26 13:33:07>	3 ‰2025-02-26 13:33:07=	3Ü2025-02-26 13:33:07<	3p2025-02-26 13:33:07;	3™2025-02-26 13:33:07:	3Ø2025-02-26 13:33:079	32025-02-26 13:33:078	3œ2025-02-26 13:33:077	32025-02-26 13:33:076	3 ’2025-02-26 13:33:075	3}2025-02-26 13:33:074	3(2025-02-26 13:33:073	3·2025-02-26 13:33:072	392025-02-26 13:33:071	3e2025-02-26 13:33:070	3<2025-02-26 13:33:07/	3-2025-02-26 13:33:07.	3s2025-02-26 13:33:07-	3Ì2025-02-26 13:33:07,	3 π2025-02-26 13:33:07+	3[2025-02-26 13:33:07*	3`2025-02-26 13:33:07)	3p2025-02-26 13:33:07(	32025-02-26 13:33:07'	3§2025-02-26 13:33:07&	32025-02-26 13:33:07%	3 Ö2025-02-26 13:33:07$	3$2025-02-26 13:33:07#	32025-02-26 13:33:07"	32025-02-26 13:33:07!	32025-02-26 13:33:07 	32025-02-26 13:33:07	3 £2025-02-26 13:33:07	3H2025-02-26 13:33:07	3L2025-02-26 13:33:07	3Ç2025-02-26 13:33:07	3Ò2025-02-26 13:33:07	3#2025-02-26 13:33:07	32025-02-26 13:33:07	3	2025-02-26 13:33:07	3M2025-02-26 13:33:07	3 ˝2025-02-26 13:33:07	3 â2025-02-26 13:33:07	3Å2025-02-26 13:33:07	3 »2025-02-26 13:33:07	3K2025-02-26 13:33:07	3%2025-02-26 13:33:07	312025-02-26 13:33:07	3B2025-02-26 13:33:07	3ﬂ2025-02-26 13:33:07	3¥2025-02-26 13:33:07	3w2025-02-26 13:33:07	32025-02-26 13:33:07
+
+	3 Ω2025-02-26 13:33:07		3T2025-02-26 13:33:07	3c2025-02-26 13:33:07	3ƒ2025-02-26 13:33:07	3>2025-02-26 13:33:07	32025-02-26 13:33:07	3’2025-02-26 13:33:07	3‘2025-02-26 13:33:07	3 ›2025-02-26 13:33:07   Ñ   É   Ç   Å   Û    Û]N…ÙﬁÌ~tÖÉëw ∫∑ä‡7†§Â_Ø≤odÒ¡'πW	GÔŸŒ?7òˇ˘—åÿOæ¡∆lg'/˜Á÷–>Fú…UÈ·î{ß/B	j®áá>H	ö
+
+É
+
+ˆMw
+
+>„(	∑ù
+
+#
+
+,	s
+
+ñ°`I			G
+
+®Û∫Äƒ §0	 	Cs
+
+5d
+
+ü
+
+P
+
+œ;º·	ÁÕ	˚◊
+
+
+
+±ﬂXÑ	9aN≠’ñmâv6'-& 
+
+ˇbì≤VêﬁC≈
+
+yœ~	ÜÄÁÏ¸$
+
+Ï
+
+[s
+
+	›	Òä
+
+ª	”	/√∞îÃÎ¯
+
+o∞1?u
+
+e	l0çÈ©	`ˇˆü≤cö{
+
+å	£ª9®èQÀ9òX
+
+Z
+
+≈¡D
+
+ÿ	%	L¶
+
+GZ}	ê	Vl
+
+QŸ	i	¿P∑ıû	|	≠
+
+j
+
+‚’◊ÜE±Ò˙<èµ˙€ƒ∂j…öÒ∂“¨s≠WSÄ%6ù“∫p\||!+/¯¢Õæ ìMf(vÁN"h»‰¨bòâ2”ÜJ…ß˙¢‹@^IÓ4`?rÙ,Xéø*Ê‡C˛l5›Í9øÁzÑ£Têò   	nYm	Hl	 ák	fj	 éi	h	Ég	 ìf	Ue	@d	ﬂc	gb	a	}`	 π_	9^	‚]X\	«[uZ]Y	íXWW	 †V	KU	¢T	ŒSR	
+
+Q	{P	ÊO	 æN	 …M	∞L	yK	lJ|I	 µH	G	 £F	¬E	ƒD	äC	*B	 ﬂA	&@J?	¿>	A=	6<	≥;	¡:9@8O7	ê6y5G4	3	12$10	/	á.	'-	≠,	+~*	-)	 ˘(	 ò'	B&%	 °$I#	 Ê"!	£ 	¥	Ä	©	d	‹k	 ç	  	æ	¶	 ˛v	vUt	 ∂*	Í	Js8
+
+	 È		`D		q	 ﬁ	ô	~	Ë 	 ˜ ˇ	ò ˛	u ˝ ¸D ˚	Ÿ ˙	è ˘k ¯	 ® ˜& ˆ	 ‹ ı	 ˘ Ù	 Û	Â Ú	o Ò	V  Ô	 – Ó	 ÿ Ì	« Ï( Î	 „ Í	N È	 ∑ Ën Á	s Ê	È Â	 Ø ‰	( „| ‚	¶ ·	 ü ‡	ä ﬂ	 π ﬁ	3 ›	 ™ ‹H €	 © ⁄	 º Ÿ, ÿ	≤ ◊	& ÷G ’	 ‘	 Ü ”	 ä “	 Å —	 –	„ œ	E ŒC Õ	À Ã= À	©  	 …	 ô »a «	¨ ∆	¡ ≈	> ƒ √1 ¬	Í ¡	 € ¿	¿ ø æ	f Ω	Ï º* ª	“ ∫\ π	 ∏	 Ú ∑	 Ö ∂	 Ù µ	 á ¥	Ó ≥	 ã ≤	å ±- ∞. Øj Æ' ≠	¥ ¨	√ ´	 Ó ™	- ©	  ®	 — ß! ¶	d •2 §m £E ¢	 é °	 ˇ †	ó üx û	® ù	Ò ú	 Ì õ# ö	 ∏ ô	. ò ó	p ñ	 µ ï[ î	m ì	 œ í% ë	 ¿ ê7 è	Ã é	 Ô ç	∫ å ã	 ƒ ä	\ âT à	 ° á	€ Ü	£ Ö	 Ñ	 ¢ É	 è Ç	: ÅF Ä Á ¯~Ù}
+
+|N{)z4yÅx	w;v|uµtYs¬r,q ⁄p	oxnÇm5l<k øjiiLhgÛf «e ‡dcb ¶a ` »_M^ Ë] ≥\ ´[)ZYrX êW ùVUgT^S òR5Q £PUONM	 ˘L	 ‚K	J	©I	JH	gG	°F	E	çD	5C	 €B	®A	 Á@	9?	 ‰>	Ü=	p<	™;	Ø:	9	œ8	7	 ’6	}5	(4	·3	92	e1	<0	-/	s.	Ì-	 π,	[+	`*	p)	(	§'	&	 Ö%	$$	#	"	!	 	 £	H	L	Ç	Ò	#				M	 ˝	 â	Å	 »	K	%	1	B	ﬂ	¥	w		 Ω
+
+	T		c	ƒ	>		’	‘    ?ø   e ﬁ ﬂ∏éf;ÛÃ¢zV2È√†xU2	‰ªñnF!˚’≠áb9
+
+Ï
+
+«
+
+ü
+
+v
+
+N
+
+(
+
+	›	π	ì	j	E	˘œ©Ö_<…§xT,‹µèhCÙŒ£yR.„ΩótP( ◊∂çiCıŒßÇ\5ÌƒùxT* ﬁ            #e 3LeliaLegros2025-02-26 13:09:02%d 3HymanBergnaum2025-02-26 13:09:02(c 3MerrittKertzmann2025-02-26 13:09:02"b 3TierraHaag2025-02-26 13:09:02#a 3ChrisBrekke2025-02-26 13:09:02%` 3DylanConnelly2025-02-26 13:09:02'_ 3SydneeJaskolski2025-02-26 13:09:02#^ 3LowellHaley2025-02-26 13:09:02!] 3FordStark2025-02-26 13:09:02%\ 3LouieBaumbach2025-02-26 13:09:02$[ 3MacyLubowitz2025-02-26 13:09:02#Z 3RosalynYost2025-02-26 13:09:02%Y 3FerminCollier2025-02-26 13:09:02%X 3LuellaZboncak2025-02-26 13:09:02#W 3YazminRunte2025-02-26 13:09:02'V 3NorbertWeissnat2025-02-26 13:09:02$U 3MargotMiller2025-02-26 13:09:02"T 3DannyWolff2025-02-26 13:09:02'S !3MargaretteSipes2025-02-26 13:09:02R 3IvaKihn2025-02-26 13:09:02'Q 3DonatoBashirian2025-02-26 13:09:02&P 3DelbertD'Amore2025-02-26 13:09:02&O 3ColbyAufderhar2025-02-26 13:09:02"N 3KacieKulas2025-02-26 13:09:02!M 3CaleBruen2025-02-26 13:09:02$L 3MaryseSkiles2025-02-26 13:09:02$K 3DillonBrekke2025-02-26 13:09:02#J 3LeonoraMraz2025-02-26 13:09:02$I 3FrancisGrant2025-02-26 13:09:02"H 3EmilieRoob2025-02-26 13:09:02%G 3DomingoTurner2025-02-26 13:09:02(F !3AmparoSchowalter2025-02-26 13:09:02)E 3ChristopWilderman2025-02-26 13:09:02$D 3DollyBartell2025-02-26 13:09:02&C 3LucileReynolds2025-02-26 13:09:02%B 3EdwinaKilback2025-02-26 13:09:02#A 3MarleyLynch2025-02-26 13:09:02%@ 3JaylinEffertz2025-02-26 13:09:02$? 3CareyQuigley2025-02-26 13:09:02%> 3CarliTremblay2025-02-26 13:09:02'= 3MadonnaNikolaus2025-02-26 13:09:02%< 3QuincyTrantow2025-02-26 13:09:02&; 3MarcelinoMayer2025-02-26 13:09:02": 3RaulTorphy2025-02-26 13:09:02*9 !3VictoriaGusikowski2025-02-26 13:09:02#8 3BaileyFrami2025-02-26 13:09:02%7 3AdrielAbshire2025-02-26 13:09:02#6 3CelineTowne2025-02-26 13:09:02%5 3SantiagoTowne2025-02-26 13:09:02!4 3RetaWeber2025-02-26 13:09:02$3 3VerniceFerry2025-02-26 13:09:02"2 3AsaSchmitt2025-02-26 13:09:02$1 3ClovisSpinka2025-02-26 13:09:02(0 3CrystelRosenbaum2025-02-26 13:09:02"/ 3AlbinaMraz2025-02-26 13:09:02&. 3CathrineJewess2025-02-26 13:09:02#- 3MarionSipes2025-02-26 13:09:02', 3MarceloSchaefer2025-02-26 13:09:02$+ 3RossieSchumm2025-02-26 13:09:02"* 3MyaTillman2025-02-26 13:09:02%) 3CorneliusKing2025-02-26 13:09:02"( 3RosaLittel2025-02-26 13:09:02$' 3MaryTurcotte2025-02-26 13:09:02&& !3CristopherRath2025-02-26 13:09:02'% 3NorvalGulgowski2025-02-26 13:09:02&$ 3KristoferKozey2025-02-26 13:09:02## 3AdamWindler2025-02-26 13:09:02%" 3WaltonMonahan2025-02-26 13:09:02$! 3SavannahLowe2025-02-26 13:09:02'  !3AlexandreaO'Kon2025-02-26 13:09:02# 3BobbyErnser2025-02-26 13:09:02$ 3LurlineMayer2025-02-26 13:09:02& 3GustaveZiemann2025-02-26 13:09:02$ 3StantonHilll2025-02-26 13:09:02$ 3MckennaLynch2025-02-26 13:09:02# 3MarcusKulas2025-02-26 13:09:02& 3XavierMosciski2025-02-26 13:09:02& !3MarjolaineHuel2025-02-26 13:09:02# 3OdessaLesch2025-02-26 13:09:02' 3WillardBogisich2025-02-26 13:09:02# 3WavaLabadie2025-02-26 13:09:02' 3MatildaAnderson2025-02-26 13:09:02! 3MiloEmard2025-02-26 13:09:02! 3MaeveKris2025-02-26 13:09:02& 3JeremieMcGlynn2025-02-26 13:09:02! 3MiloTromp2025-02-26 13:09:02$ 3CletusHammes2025-02-26 13:09:02$ 3RichieStokes2025-02-26 13:09:02! 3GeneDavis2025-02-26 13:09:02" 3PietroBins2025-02-26 13:09:02" 3NeilBrekke2025-02-26 13:09:02&
+
+ 3ShanelEichmann2025-02-26 13:09:02(	 3AbigayleKshlerin2025-02-26 13:09:02% 3IsobelLeannon2025-02-26 13:09:02! 3LiaHeller2025-02-26 13:09:02# 3ChloeDooley2025-02-26 13:09:02) !3JordaneCartwright2025-02-26 13:09:02& 3MireilleLittle2025-02-26 13:09:02( 3RebekahDickinson2025-02-26 13:08:51% 3HelmerMueller2025-02-26 13:08:51 3FloDare2025-02-26 13:08:17    ÷±åd9      
+
+            
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       #Ét 3PiperLittle2025-02-26 13:09:02(És !3MelanyMacejkovic2025-02-26 13:09:02%Ér 3CecilAnderson2025-02-26 13:09:02"Éq 3OpheliaOrn2025-02-26 13:09:02"Ép 3JamirBayer2025-02-26 13:09:02'Éo 3DesireeLeuschke2025-02-26 13:09:02   b Ÿ ◊Øâb<Ô»£xU*ÿØãb=Ì«†vK˜–©ÅY2	
+
+›
+
+¥
+
+ã
+
+a
+
+4
+
+	‚	º	ê	j	D	 ˙÷∞âd;ËƒùwR0	„ΩìlHÛœ™Ç[4
+
+Âπçh@Ó»°{T(›∏ég;È¬ötL( Ÿ             &É 3RobertO'Reilly2025-02-26 13:09:02#É 3AbnerErdman2025-02-26 13:09:02!É
+
+ 3SerenaRau2025-02-26 13:09:02%É	 3AnjaliDickens2025-02-26 13:09:02#É 3BudDonnelly2025-02-26 13:09:02%É 3CathrineLakin2025-02-26 13:09:02$É 3JordynErnser2025-02-26 13:09:02$É 3DarrelSpinka2025-02-26 13:09:02(É #3AaronHeidenreich2025-02-26 13:09:02)É 3HumbertoGreenholt2025-02-26 13:09:02$É 3KathrynWhite2025-02-26 13:09:02'É 3DallinRosenbaum2025-02-26 13:09:02"É  3EmmetJerde2025-02-26 13:09:02$Ç 3RollinJewess2025-02-26 13:09:02!Ç~ 3EnidBeier2025-02-26 13:09:02)Ç} #3ArleneHeidenreich2025-02-26 13:09:02$Ç| 3OleVonRueden2025-02-26 13:09:02#Ç{ 3WillisBogan2025-02-26 13:09:02$Çz 3OdessaZemlak2025-02-26 13:09:02#Çy 3KalebDaniel2025-02-26 13:09:02$Çx 3AnnettaGreen2025-02-26 13:09:02(Çw 3BlancheLangworth2025-02-26 13:09:02%Çv 3IleneGottlieb2025-02-26 13:09:02"Çu 3ClaudeMraz2025-02-26 13:09:02)Çt 3AudreanneNikolaus2025-02-26 13:09:02)Çs !3WilbertBartoletti2025-02-26 13:09:02"Çr 3LeraSawayn2025-02-26 13:09:02'Çq !3LamarAltenwerth2025-02-26 13:09:02$Çp 3LempiStracke2025-02-26 13:09:02$Ço 3TyreseKuphal2025-02-26 13:09:02%Çn 3ArleneSmitham2025-02-26 13:09:02"Çm 3JaceLarson2025-02-26 13:09:02!Çl 3PaoloLind2025-02-26 13:09:02)Çk #3MaximillianBecker2025-02-26 13:09:02&Çj 3ChristaZboncak2025-02-26 13:09:02!Çi 3NameEmard2025-02-26 13:09:02$Çh 3CliftonNolan2025-02-26 13:09:02'Çg 3LeonoraO'Reilly2025-02-26 13:09:02#Çf 3ShadSimonis2025-02-26 13:09:02#Çe 3AdellHerman2025-02-26 13:09:02$Çd 3DaphneyBruen2025-02-26 13:09:02Çc 3KaciOga2025-02-26 13:09:02"Çb 3DinoMarvin2025-02-26 13:09:02#Ça 3StaceyFadel2025-02-26 13:09:02$Ç` 3NyasiaJacobs2025-02-26 13:09:02!Ç_ 3ElvisRyan2025-02-26 13:09:02'Ç^ 3KaitlinTurcotte2025-02-26 13:09:02&Ç] 3MarleySchimmel2025-02-26 13:09:02&Ç\ 3DavonteWeimann2025-02-26 13:09:02"Ç[ 3EmoryHyatt2025-02-26 13:09:02$ÇZ 3ChaimMcGlynn2025-02-26 13:09:02#ÇY 3LeonieO'Kon2025-02-26 13:09:02!ÇX 3GoldaBode2025-02-26 13:09:02#ÇW 3DomenicAuer2025-02-26 13:09:02!ÇV 3GarthRowe2025-02-26 13:09:02#ÇU 3TinaHegmann2025-02-26 13:09:02#ÇT 3StanSmitham2025-02-26 13:09:02)ÇS 3GeoffreyGreenholt2025-02-26 13:09:02#ÇR 3KaleighYost2025-02-26 13:09:02)ÇQ 3ArchibaldPredovic2025-02-26 13:09:02#ÇP 3DestiniDare2025-02-26 13:09:02*ÇO !3AntoinetteSchmeler2025-02-26 13:09:02'ÇN !3PatsySchowalter2025-02-26 13:09:02&ÇM 3DellaBergstrom2025-02-26 13:09:02&ÇL 3TaureanRitchie2025-02-26 13:09:02)ÇK %3LaneyChristiansen2025-02-26 13:09:02&ÇJ 3CamrenSchuster2025-02-26 13:09:02$ÇI 3AaronKerluke2025-02-26 13:09:02%ÇH 3LionelCorkery2025-02-26 13:09:02%ÇG 3KylieOndricka2025-02-26 13:09:02$ÇF 3LelahSteuber2025-02-26 13:09:02$ÇE 3EveretteHaag2025-02-26 13:09:02%ÇD 3VergieFritsch2025-02-26 13:09:02)ÇC !3MargueriteSpencer2025-02-26 13:09:02(ÇB 3LeilaniSchneider2025-02-26 13:09:02'ÇA !3DaijaMcLaughlin2025-02-26 13:09:02$Ç@ 3NaomiQuitzon2025-02-26 13:09:02#Ç? 3AhmadJacobi2025-02-26 13:09:02&Ç> 3AlanisBotsford2025-02-26 13:09:02$Ç= 3TannerWaters2025-02-26 13:09:02"Ç< 3KianSawayn2025-02-26 13:09:02&Ç; 3KarianeKessler2025-02-26 13:09:02!Ç: 3AlecSmith2025-02-26 13:09:02&Ç9 3AlphonsoSpinka2025-02-26 13:09:02'Ç8 3AlexisBahringer2025-02-26 13:09:02%Ç7 3TrystanJacobi2025-02-26 13:09:02(Ç6 !3MalikaSwaniawski2025-02-26 13:09:02 Ç5 3VitaMetz2025-02-26 13:09:02(Ç4 3ThurmanConsidine2025-02-26 13:09:02"Ç3 3EvertKulas2025-02-26 13:09:02$Ç2 3SageOndricka2025-02-26 13:09:02$Ç1 3IsabelJewess2025-02-26 13:09:02#Ç0 3MelanyOrtiz2025-02-26 13:09:02#Ç/ 3IbrahimLang2025-02-26 13:09:02$Ç. 3ArdenKuhlman2025-02-26 13:09:02#Ç- 3EmeryHarvey2025-02-26 13:09:02%Ç, 3AutumnGoyette2025-02-26 13:09:02&Ç+ 3AlveraSchimmel2025-02-26 13:09:02   b “ ÿ≤ég=Û…¢{U,ﬂ∏ñk@ÛÕ†zN%¸“≠Ñ]6
+
+È
+
+¡
+
+ò
+
+m
+
+K
+
+#	˛	Ÿ	µ	ê	g	=	Ë¬ûxQ*⁄¨àdAÏ¡òtK&˝‘ÆÇ[4›±âc<ÒÀûuN$ÿ≤ãd<Ì»†yN# ˙ “      %Én 3OceaneStreich2025-02-26 13:09:02&Ém 3MiguelO'Reilly2025-02-26 13:09:02(Él 3RicardoWilkinson2025-02-26 13:09:02(Ék #3ChristopherRobel2025-02-26 13:09:02$Éj 3RosettaHauck2025-02-26 13:09:02%Éi 3LaneySchaefer2025-02-26 13:09:02"Éh 3PaulaHills2025-02-26 13:09:02#Ég 3PalmaRempel2025-02-26 13:09:02&Éf 3VernonO'Reilly2025-02-26 13:09:02%Ée 3DariusFlatley2025-02-26 13:09:02$Éd 3MattieLittle2025-02-26 13:09:02$Éc 3ErickBernier2025-02-26 13:09:02#Éb 3CesarRaynor2025-02-26 13:09:02&Éa 3MarianKshlerin2025-02-26 13:09:02 É` 3CoraConn2025-02-26 13:09:02'É_ !3PaoloMcCullough2025-02-26 13:09:02$É^ 3GunnerHansen2025-02-26 13:09:02&É] 3GabriellaHoppe2025-02-26 13:09:02*É\ !3PatienceStiedemann2025-02-26 13:09:02#É[ 3JerrellWard2025-02-26 13:09:02$ÉZ 3DamianDaniel2025-02-26 13:09:02!ÉY 3LexiStark2025-02-26 13:09:02$ÉX 3RubyeMcGlynn2025-02-26 13:09:02#ÉW 3KoreyCasper2025-02-26 13:09:02%ÉV 3JuniusDibbert2025-02-26 13:09:02)ÉU !3ChasityMcLaughlin2025-02-26 13:09:02,ÉT '3DeondreRunolfsdottir2025-02-26 13:09:02%ÉS 3DorothySpinka2025-02-26 13:09:02$ÉR 3SandyHermann2025-02-26 13:09:02$ÉQ 3AlizeGerlach2025-02-26 13:09:02)ÉP !3CarmeloCartwright2025-02-26 13:09:02#ÉO 3PierceRatke2025-02-26 13:09:02&ÉN 3EleanoraSchumm2025-02-26 13:09:02&ÉM 3JadonGreenholt2025-02-26 13:09:02"ÉL 3LionelBode2025-02-26 13:09:02&ÉK 3BertramEffertz2025-02-26 13:09:02!ÉJ 3CoyConroy2025-02-26 13:09:02&ÉI 3AngieGleichner2025-02-26 13:09:02(ÉH !3HollieBalistreri2025-02-26 13:09:02)ÉG 3EleanoreVonRueden2025-02-26 13:09:02&ÉF 3BrandynQuigley2025-02-26 13:09:02 ÉE 3EthaHane2025-02-26 13:09:02!ÉD 3MyrlHyatt2025-02-26 13:09:02!ÉC 3MikeHintz2025-02-26 13:09:02+ÉB !3MarcelinoMorissette2025-02-26 13:09:02'ÉA !3LarryJakubowski2025-02-26 13:09:02#É@ 3TannerBerge2025-02-26 13:09:02$É? 3LaishaHarvey2025-02-26 13:09:02$É> 3KrisJacobson2025-02-26 13:09:02#É= 3EmileCremin2025-02-26 13:09:02!É< 3BulahHahn2025-02-26 13:09:02#É; 3AydenWisoky2025-02-26 13:09:02&É: 3CullenSchuster2025-02-26 13:09:02)É9 3FilibertoHomenick2025-02-26 13:09:02'É8 3BraedenSchuster2025-02-26 13:09:02&É7 3JerrellGerhold2025-02-26 13:09:02"É6 3KianHarris2025-02-26 13:09:02!É5 3ThadFrami2025-02-26 13:09:02"É4 3MonroeLowe2025-02-26 13:09:02"É3 3ShanaWhite2025-02-26 13:09:02%É2 3AidaBuckridge2025-02-26 13:09:02É1 3BradToy2025-02-26 13:09:02(É0 3GranvilleZboncak2025-02-26 13:09:02&É/ 3AlexaneKerluke2025-02-26 13:09:02%É. 3WendyGorczany2025-02-26 13:09:02É- 3FaeRath2025-02-26 13:09:02(É, 3BerniceArmstrong2025-02-26 13:09:02$É+ 3RachelleMohr2025-02-26 13:09:02$É* 3JaquanMurray2025-02-26 13:09:02&É) 3QuincyBergnaum2025-02-26 13:09:02"É( 3ZoeDuBuque2025-02-26 13:09:02'É' !3LianaBalistreri2025-02-26 13:09:02&É& 3KenyaBashirian2025-02-26 13:09:02&É% 3CamrenDietrich2025-02-26 13:09:02)É$ 3BridgetteCummings2025-02-26 13:09:02#É# 3KarsonMertz2025-02-26 13:09:02*É" !3DestineyStiedemann2025-02-26 13:09:02#É! 3AbnerRippin2025-02-26 13:09:02"É  3ErnieOrtiz2025-02-26 13:09:02%É 3PollyNikolaus2025-02-26 13:09:02(É 3MarcelinaCormier2025-02-26 13:09:02(É 3MarshallJacobson2025-02-26 13:09:02É 3EvanToy2025-02-26 13:09:02$É 3FeltonBeatty2025-02-26 13:09:02!É 3TheaMorar2025-02-26 13:09:02&É 3LlewellynSauer2025-02-26 13:09:02&É 3EleazarWuckert2025-02-26 13:09:02#É 3EmiliaHyatt2025-02-26 13:09:02$É 3BrisaGoodwin2025-02-26 13:09:02$É 3AdolfQuigley2025-02-26 13:09:02'É 3IsabellLindgren2025-02-26 13:09:02"É 3LuluMuller2025-02-26 13:09:02"É 3RevaJewess2025-02-26 13:09:02'É 3RogersWilderman2025-02-26 13:09:02$É 3LeonorDurgan2025-02-26 13:09:02!É 3VivaBrown2025-02-26 13:09:02#É 3MichaelBins2025-02-26 13:09:02%É 3IsabelleHaley2025-02-26 13:09:02   c ⁄ ⁄¥ëlG˘’™ÅV/„πîpJ'Ÿ≤åd=À¢{Q'
+
+€
+
+≤
+
+á
+
+a
+
+6
+
+	Â	π	í	k	D	˙–§X3›¥àd=Ù…¢xN#ˇ⁄≥äe?ÙÕ¶Å^:Ì¡òlI!˛’≠Ç]9Ì√õuL"  ⁄            #ÅH 3MollieJohns2025-02-26 13:09:02ÅG 3GustRau2025-02-26 13:09:02'ÅF 3CleoraBergstrom2025-02-26 13:09:02&ÅE 3BusterSchaefer2025-02-26 13:09:02#ÅD 3DedrickBeer2025-02-26 13:09:02%ÅC 3GracielaRunte2025-02-26 13:09:02'ÅB 3AlannaKertzmann2025-02-26 13:09:02$ÅA 3TravonLittle2025-02-26 13:09:02"Å@ 3OrinSchoen2025-02-26 13:09:02!Å? 3RowanDare2025-02-26 13:09:02"Å> 3ElzaRaynor2025-02-26 13:09:02(Å= 3SheridanHomenick2025-02-26 13:09:02%Å< 3GreenFranecki2025-02-26 13:09:02&Å; 3LudwigChamplin2025-02-26 13:09:02 Å: 3BryonKub2025-02-26 13:09:02%Å9 3VeldaBaumbach2025-02-26 13:09:02 Å8 3MaeLemke2025-02-26 13:09:02)Å7 !3EvangelineKeeling2025-02-26 13:09:02&Å6 3GabriellaUpton2025-02-26 13:09:02)Å5 !3ClarabelleWaelchi2025-02-26 13:09:02#Å4 3MortonNader2025-02-26 13:09:02$Å3 3EmmettWehner2025-02-26 13:09:02!Å2 3DrewGreen2025-02-26 13:09:02 Å1 3OraKunde2025-02-26 13:09:02"Å0 3EnriqueRau2025-02-26 13:09:02$Å/ 3NasirD'Amore2025-02-26 13:09:02$Å. 3KolbyMcClure2025-02-26 13:09:02#Å- 3ZionKerluke2025-02-26 13:09:02"Å, 3DaleZulauf2025-02-26 13:09:02#Å+ 3ShyannKiehn2025-02-26 13:09:02"Å* 3HertaBosco2025-02-26 13:09:02&Å) 3DarionProhaska2025-02-26 13:09:02$Å( 3DinoNikolaus2025-02-26 13:09:02"Å' 3EliseThiel2025-02-26 13:09:02!Å& 3VedaMorar2025-02-26 13:09:02(Å% 3JosephineSpencer2025-02-26 13:09:02'Å$ 3RosaleeSchimmel2025-02-26 13:09:02'Å# 3AubreyHeathcote2025-02-26 13:09:02$Å" 3ErikWeissnat2025-02-26 13:09:02(Å! 3YesseniaSchuster2025-02-26 13:09:02!Å  3AshaRobel2025-02-26 13:09:02"Å 3IvyKeeling2025-02-26 13:09:02$Å 3NonaParisian2025-02-26 13:09:02!Å 3HansLakin2025-02-26 13:09:02)Å !3BertramBartoletti2025-02-26 13:09:02&Å 3AshleeNikolaus2025-02-26 13:09:02'Å !3DeltaRunolfsson2025-02-26 13:09:02)Å 3BernadineCummings2025-02-26 13:09:02"Å 3FidelFadel2025-02-26 13:09:02$Å 3CaseyMurazik2025-02-26 13:09:02"Å 3AshleyHuel2025-02-26 13:09:02)Å !3EarnestineStrosin2025-02-26 13:09:02'Å 3AntoniaMitchell2025-02-26 13:09:02 Å 3MiaFrami2025-02-26 13:09:02$Å 3DerickErnser2025-02-26 13:09:02$Å 3NicklausKris2025-02-26 13:09:02$Å 3DorrisReilly2025-02-26 13:09:02$Å 3EnriqueWelch2025-02-26 13:09:02)Å 3BeatriceSchroeder2025-02-26 13:09:02#Å 3EmilieNolan2025-02-26 13:09:02(Å !3FatimaBalistreri2025-02-26 13:09:02(Å 3D'angeloLeuschke2025-02-26 13:09:02#Å
+
+ 3CarliStokes2025-02-26 13:09:02(Å	 %3RobbPfannerstill2025-02-26 13:09:02&Å 3EstevanKuhlman2025-02-26 13:09:02$Å 3MyrtieRussel2025-02-26 13:09:02"Å 3LianaFadel2025-02-26 13:09:02'Å 3JacquelynCassin2025-02-26 13:09:02'Å 3JovanyHermiston2025-02-26 13:09:02$Å 3RickeyErnser2025-02-26 13:09:02&Å 3SarinaWeissnat2025-02-26 13:09:02"Å 3JaidaFeest2025-02-26 13:09:02"Å  3RosarioVon2025-02-26 13:09:02& 3AdelbertGraham2025-02-26 13:09:02%~ 3CarletonKozey2025-02-26 13:09:02&} 3DeannaShanahan2025-02-26 13:09:02$| 3AurelieLakin2025-02-26 13:09:02%{ 3KeenanCollier2025-02-26 13:09:02&z 3LeoneArmstrong2025-02-26 13:09:02$y 3FlavioBarton2025-02-26 13:09:02!x 3AlbinRoob2025-02-26 13:09:02$w 3AlexNitzsche2025-02-26 13:09:02"v 3QuincyHaag2025-02-26 13:09:02#u 3LavernHyatt2025-02-26 13:09:02(t !3DillonRunolfsson2025-02-26 13:09:02"s 3LinnieKihn2025-02-26 13:09:02&r 3AdityaTurcotte2025-02-26 13:09:02%q 3KellenDuBuque2025-02-26 13:09:02)p !3CamylleMacejkovic2025-02-26 13:09:02'o 3ShyannArmstrong2025-02-26 13:09:02)n 3MargareteTurcotte2025-02-26 13:09:02"m 3AdolfDoyle2025-02-26 13:09:02#l 3LazaroRatke2025-02-26 13:09:02'k !3SashaMcLaughlin2025-02-26 13:09:02#j 3TracyHamill2025-02-26 13:09:02#i 3JudeTreutel2025-02-26 13:09:02!h 3ToyDurgan2025-02-26 13:09:02$g 3KayAufderhar2025-02-26 13:09:02$f 3EmmetKilback2025-02-26 13:09:02   b Í ◊Æâa<ÙÀ¢xP*‹µèe?Ò…ûwK%˝’≠ÑU.
+
+€
+
+≥
+
+ã
+
+d
+
+?
+
+		 	ß	~	Y	-	‰æîpI#˙”™Ö]3„ªëkFı—¨á^6ﬂ∫ãgAıÕ¶~Z2Ê¿öoL)ÿ±â`7 Í                              %Ç* 3PhoebeKuvalis2025-02-26 13:09:02"Ç) 3OdaQuigley2025-02-26 13:09:02&Ç( 3RoyalRomaguera2025-02-26 13:09:02&Ç' 3LaurianneTerry2025-02-26 13:09:02%Ç& 3KareemGleason2025-02-26 13:09:02$Ç% 3EugeneHarvey2025-02-26 13:09:02'Ç$ 3ReynoldShanahan2025-02-26 13:09:02$Ç# 3ChelseaMante2025-02-26 13:09:02 Ç" 3AidaCole2025-02-26 13:09:02 Ç! 3ClayWest2025-02-26 13:09:02(Ç  3MackenzieUllrich2025-02-26 13:09:02#Ç 3BlazeCorwin2025-02-26 13:09:02#Ç 3PeytonBoyer2025-02-26 13:09:02&Ç 3OzellaWeissnat2025-02-26 13:09:02 Ç 3AmieKihn2025-02-26 13:09:02%Ç 3NolanConnelly2025-02-26 13:09:02!Ç 3LylaMertz2025-02-26 13:09:02%Ç 3LonzoBergnaum2025-02-26 13:09:02$Ç 3LavinaJewess2025-02-26 13:09:02%Ç 3AlfonzoTorphy2025-02-26 13:09:02"Ç 3MisaelAuer2025-02-26 13:09:02$Ç 3CorbinCasper2025-02-26 13:09:02#Ç 3LeonelKoepp2025-02-26 13:09:02!Ç 3OscarWiza2025-02-26 13:09:02,Ç #3AlexandraCruickshank2025-02-26 13:09:02"Ç 3SkyeCronin2025-02-26 13:09:02&Ç !3AricKonopelski2025-02-26 13:09:02+Ç %3ChelseaChristiansen2025-02-26 13:09:02%Ç 3ElishaMcGlynn2025-02-26 13:09:02&Ç 3GabrielleUpton2025-02-26 13:09:02"Ç 3LonKuvalis2025-02-26 13:09:02"Ç 3ElenorMann2025-02-26 13:09:02!Ç
+
+ 3LamarDare2025-02-26 13:09:02&Ç	 3HerbertWitting2025-02-26 13:09:02%Ç 3HerminiaMante2025-02-26 13:09:02"Ç 3LauraKozey2025-02-26 13:09:02#Ç 3AaronMarvin2025-02-26 13:09:02'Ç !3ConcepcionWalsh2025-02-26 13:09:02%Ç 3RoslynDickens2025-02-26 13:09:02 Ç 3MetaKuhn2025-02-26 13:09:02*Ç !3GracielaWilliamson2025-02-26 13:09:02'Ç !3EulahMcCullough2025-02-26 13:09:02%Ç  3DerekOndricka2025-02-26 13:09:02"Å 3MylesHuels2025-02-26 13:09:02&Å~ 3DemetriusUpton2025-02-26 13:09:02$Å} 3LetaBotsford2025-02-26 13:09:02&Å| !3LaneMcCullough2025-02-26 13:09:02#Å{ 3DellaTurner2025-02-26 13:09:02$Åz 3HarryBradtke2025-02-26 13:09:02!Åy 3AlexMills2025-02-26 13:09:02'Åx 3LibbieCummerata2025-02-26 13:09:02#Åw 3KamrynStamm2025-02-26 13:09:02Åv 3TateToy2025-02-26 13:09:02$Åu 3NyaVonRueden2025-02-26 13:09:02)Åt !3MargaretteDibbert2025-02-26 13:09:02"Ås 3OcieMaggio2025-02-26 13:09:02&År 3RemingtonDavis2025-02-26 13:09:02 Åq 3BillCole2025-02-26 13:09:02#Åp 3LacyOkuneva2025-02-26 13:09:02%Åo 3MarcellaHintz2025-02-26 13:09:02$Ån 3WallaceBoehm2025-02-26 13:09:02"Åm 3EmilRussel2025-02-26 13:09:02$Ål 3FabiolaBrown2025-02-26 13:09:02%Åk 3MagnusWuckert2025-02-26 13:09:02%Åj 3ZariaConnelly2025-02-26 13:09:02%Åi 3EnolaLindgren2025-02-26 13:09:02(Åh 3AracelyMarquardt2025-02-26 13:09:02$Åg 3DeclanAbbott2025-02-26 13:09:02,Åf #3GwendolynHeidenreich2025-02-26 13:09:02&Åe 3JordonReichert2025-02-26 13:09:02%Åd 3ThaliaKovacek2025-02-26 13:09:02%Åc 3HerminioTerry2025-02-26 13:09:02%Åb 3NikolasLarkin2025-02-26 13:09:02#Åa 3DaisySawayn2025-02-26 13:09:02)Å` 3LawrenceArmstrong2025-02-26 13:09:02$Å_ 3MikelCarroll2025-02-26 13:09:02(Å^ '3AnaRunolfsdottir2025-02-26 13:09:02%Å] 3BlancaMueller2025-02-26 13:09:02$Å\ 3ManuelO'Hara2025-02-26 13:09:02$Å[ 3AllisonStamm2025-02-26 13:09:02#ÅZ 3LenoraStark2025-02-26 13:09:02'ÅY 3HerminiaUllrich2025-02-26 13:09:02#ÅX 3EnosKuhlman2025-02-26 13:09:02$ÅW 3FordKassulke2025-02-26 13:09:02$ÅV 3MillerPouros2025-02-26 13:09:02$ÅU 3EmilioCremin2025-02-26 13:09:02#ÅT 3JudeSpencer2025-02-26 13:09:02%ÅS 3MittieD'Amore2025-02-26 13:09:02'ÅR 3VickieJaskolski2025-02-26 13:09:02&ÅQ 3FerminLubowitz2025-02-26 13:09:02&ÅP 3JeromyEmmerich2025-02-26 13:09:02!ÅO 3SethMertz2025-02-26 13:09:02!ÅN 3ReynaHuel2025-02-26 13:09:02"ÅM 3DeanFeeney2025-02-26 13:09:02%ÅL 3LuciusMurazik2025-02-26 13:09:02"ÅK 3JuliaKiehn2025-02-26 13:09:02&ÅJ !3ZulaMacejkovic2025-02-26 13:09:02&ÅI 3WhitneySpencer2025-02-26 13:09:02   ã5 Â Øîy^C(ÛŸø§ânT: Íœ¥ô~cH-¯ﬁ√®étZ@%’∫üÖjO5 
+
+Ê
+
+Ã
+
+±
+
+ó
+
+|
+
+a
+
+G
+
+,
+
+	˜	‹	¬	ß	å	q	V	;	 	Íœ¥ödJ/¯›¡•âmQ6˛‚«¨êtX<!ÈÕ±ñz^B&Ô”∑úÄdI-ıŸΩ°ÜlP4˛‚∆™érU8˛·ƒßãnQ5                       Å32025-02-26 13:34:40Å
+
+3 ƒ2025-02-26 13:34:40Å	3\2025-02-26 13:34:40Å3T2025-02-26 13:34:40Å3 °2025-02-26 13:34:40Å3€2025-02-26 13:34:40Å3£2025-02-26 13:34:40Å32025-02-26 13:34:40Å3 ¢2025-02-26 13:34:40Å3 è2025-02-26 13:34:40Å3:2025-02-26 13:34:40Å 3F2025-02-26 13:34:403 Á2025-02-26 13:34:40~3 ¯2025-02-26 13:34:40}3Ù2025-02-26 13:34:40|3
+
+2025-02-26 13:34:40{3N2025-02-26 13:34:40z3)2025-02-26 13:34:40y342025-02-26 13:34:40x3Å2025-02-26 13:34:40w	32025-02-26 13:34:40v3;2025-02-26 13:34:40u3|2025-02-26 13:34:40t3µ2025-02-26 13:34:40s3Y2025-02-26 13:34:40r3¬2025-02-26 13:34:40q3,2025-02-26 13:34:40p3 ⁄2025-02-26 13:34:40o3	2025-02-26 13:34:40n3x2025-02-26 13:34:40m3Ç2025-02-26 13:34:40l352025-02-26 13:34:40k3<2025-02-26 13:34:40j3 ø2025-02-26 13:34:40i3i2025-02-26 13:34:40h3L2025-02-26 13:34:40g32025-02-26 13:34:40f3Û2025-02-26 13:34:40e3 «2025-02-26 13:34:40d3 ‡2025-02-26 13:34:40c32025-02-26 13:34:40b32025-02-26 13:34:40a3 ¶2025-02-26 13:34:40`3 2025-02-26 13:34:40_3 »2025-02-26 13:34:40^3M2025-02-26 13:34:40]3 Ë2025-02-26 13:34:40\3 ≥2025-02-26 13:34:40[3 ´2025-02-26 13:34:40Z3)2025-02-26 13:34:40Y32025-02-26 13:34:40X3r2025-02-26 13:34:40W3 ê2025-02-26 13:34:40V3 ù2025-02-26 13:34:40U32025-02-26 13:34:40T3g2025-02-26 13:34:40S3^2025-02-26 13:34:40R3 ò2025-02-26 13:34:40Q352025-02-26 13:34:40P3 £2025-02-26 13:34:40O3U2025-02-26 13:34:40N32025-02-26 13:34:40M32025-02-26 13:34:40L	3 ˘2025-02-26 13:33:07K	3 ‚2025-02-26 13:33:07J	32025-02-26 13:33:07I	3©2025-02-26 13:33:07H	3J2025-02-26 13:33:07G	3g2025-02-26 13:33:07F	3°2025-02-26 13:33:07E	32025-02-26 13:33:07D	3ç2025-02-26 13:33:07C	352025-02-26 13:33:07B	3 €2025-02-26 13:33:07A	3®2025-02-26 13:33:07@	3 Á2025-02-26 13:33:07?	392025-02-26 13:33:07>	3 ‰2025-02-26 13:33:07=	3Ü2025-02-26 13:33:07<	3p2025-02-26 13:33:07;	3™2025-02-26 13:33:07:	3Ø2025-02-26 13:33:079	32025-02-26 13:33:078	3œ2025-02-26 13:33:077	32025-02-26 13:33:076	3 ’2025-02-26 13:33:075	3}2025-02-26 13:33:074	3(2025-02-26 13:33:073	3·2025-02-26 13:33:072	392025-02-26 13:33:071	3e2025-02-26 13:33:070	3<2025-02-26 13:33:07/	3-2025-02-26 13:33:07.	3s2025-02-26 13:33:07-	3Ì2025-02-26 13:33:07,	3 π2025-02-26 13:33:07+	3[2025-02-26 13:33:07*	3`2025-02-26 13:33:07)	3p2025-02-26 13:33:07(	32025-02-26 13:33:07'	3§2025-02-26 13:33:07&	32025-02-26 13:33:07%	3 Ö2025-02-26 13:33:07$	3$2025-02-26 13:33:07#	32025-02-26 13:33:07"	32025-02-26 13:33:07!	32025-02-26 13:33:07 	32025-02-26 13:33:07	3 £2025-02-26 13:33:07	3H2025-02-26 13:33:07	3L2025-02-26 13:33:07	3Ç2025-02-26 13:33:07	3Ò2025-02-26 13:33:07	3#2025-02-26 13:33:07	32025-02-26 13:33:07	3	2025-02-26 13:33:07	3M2025-02-26 13:33:07	3 ˝2025-02-26 13:33:07	3 â2025-02-26 13:33:07	3Å2025-02-26 13:33:07	3 »2025-02-26 13:33:07	3K2025-02-26 13:33:07	3%2025-02-26 13:33:07	312025-02-26 13:33:07	3B2025-02-26 13:33:07	3ﬂ2025-02-26 13:33:07	3¥2025-02-26 13:33:07	3w2025-02-26 13:33:07	32025-02-26 13:33:07
+
+	3 Ω2025-02-26 13:33:07		3T2025-02-26 13:33:07	3c2025-02-26 13:33:07	3ƒ2025-02-26 13:33:07	3>2025-02-26 13:33:07	32025-02-26 13:33:07	3’2025-02-26 13:33:07	3‘2025-02-26 13:33:07	3 ›2025-02-26 13:33:07	3=2025-02-26 13:33:07   Ö „∆©çpT7˛·ƒ®ãnR5˚ﬂ¬•àlP4˚ﬁ¡§ájM1˘›¿£ÜiL/
+
+ı
+
+Ÿ
+
+º
+
+†
+
+É
+
+f
+
+J
+
+-
+
+	Û	◊	ª	û	Å	d	H	+	Ò’∏úbE(Ó—µò{_B%	Ïœ≤ïx[?"ËÀØíuX<Â…¨èrU8ˇ‚∆©åpT7˝‡√¶âlO3˙›¡•àkO3    Ç3 ∂2025-02-26 13:36:18Ç32025-02-26 13:36:18Ç3*2025-02-26 13:36:18Ç3Í2025-02-26 13:36:18Ç3J2025-02-26 13:36:18Ç3s2025-02-26 13:36:18Ç
+
+382025-02-26 13:36:18Ç	3 È2025-02-26 13:36:18Ç32025-02-26 13:36:18Ç3`2025-02-26 13:36:18Ç3D2025-02-26 13:36:18Ç32025-02-26 13:36:18Ç3q2025-02-26 13:36:18Ç3 ﬁ2025-02-26 13:36:18Ç3ô2025-02-26 13:36:18Ç3~2025-02-26 13:36:18Ç 3Ë2025-02-26 13:36:18Å3 ˜2025-02-26 13:36:18Å~3ò2025-02-26 13:36:18Å}3u2025-02-26 13:36:18Å|32025-02-26 13:34:40Å{3D2025-02-26 13:34:40Åz3Ÿ2025-02-26 13:34:40Åy3è2025-02-26 13:34:40Åx3k2025-02-26 13:34:40Åw3 ®2025-02-26 13:34:40Åv3&2025-02-26 13:34:40Åu3 ‹2025-02-26 13:34:40Åt3 ˘2025-02-26 13:34:40Ås32025-02-26 13:34:40År3Â2025-02-26 13:34:40Åq3o2025-02-26 13:34:40Åp3V2025-02-26 13:34:40Åo32025-02-26 13:34:40Ån3 –2025-02-26 13:34:40Åm3 ÿ2025-02-26 13:34:40Ål3«2025-02-26 13:34:40Åk3(2025-02-26 13:34:40Åj3 „2025-02-26 13:34:40Åi3N2025-02-26 13:34:40Åh3 ∑2025-02-26 13:34:40Åg3n2025-02-26 13:34:40Åf3s2025-02-26 13:34:40Åe3È2025-02-26 13:34:40Åd3 Ø2025-02-26 13:34:40Åc3(2025-02-26 13:34:40Åb3|2025-02-26 13:34:40Åa3¶2025-02-26 13:34:40Å`3 ü2025-02-26 13:34:40Å_3ä2025-02-26 13:34:40Å^3 π2025-02-26 13:34:40Å]332025-02-26 13:34:40Å\3 ™2025-02-26 13:34:40Å[3H2025-02-26 13:34:40ÅZ3 ©2025-02-26 13:34:40ÅY3 º2025-02-26 13:34:40ÅX3,2025-02-26 13:34:40ÅW3≤2025-02-26 13:34:40ÅV3&2025-02-26 13:34:40ÅU3G2025-02-26 13:34:40ÅT32025-02-26 13:34:40ÅS3 Ü2025-02-26 13:34:40ÅR3 ä2025-02-26 13:34:40ÅQ3 Å2025-02-26 13:34:40ÅP32025-02-26 13:34:40ÅO3„2025-02-26 13:34:40ÅN3E2025-02-26 13:34:40ÅM3C2025-02-26 13:34:40ÅL3À2025-02-26 13:34:40ÅK3=2025-02-26 13:34:40ÅJ3©2025-02-26 13:34:40ÅI32025-02-26 13:34:40ÅH3 ô2025-02-26 13:34:40ÅG3a2025-02-26 13:34:40ÅF3¨2025-02-26 13:34:40ÅE3¡2025-02-26 13:34:40ÅD3>2025-02-26 13:34:40ÅC32025-02-26 13:34:40ÅB312025-02-26 13:34:40ÅA3Í2025-02-26 13:34:40Å@3 €2025-02-26 13:34:40Å?3¿2025-02-26 13:34:40Å>32025-02-26 13:34:40Å=3f2025-02-26 13:34:40Å<3Ï2025-02-26 13:34:40Å;3*2025-02-26 13:34:40Å:3“2025-02-26 13:34:40Å93\2025-02-26 13:34:40Å832025-02-26 13:34:40Å73 Ú2025-02-26 13:34:40Å63 Ö2025-02-26 13:34:40Å53 Ù2025-02-26 13:34:40Å43 á2025-02-26 13:34:40Å33Ó2025-02-26 13:34:40Å23 ã2025-02-26 13:34:40Å13å2025-02-26 13:34:40Å03-2025-02-26 13:34:40Å/3.2025-02-26 13:34:40Å.3j2025-02-26 13:34:40Å-3'2025-02-26 13:34:40Å,3¥2025-02-26 13:34:40Å+3√2025-02-26 13:34:40Å*3 Ó2025-02-26 13:34:40Å)3-2025-02-26 13:34:40Å(3 2025-02-26 13:34:40Å'3 —2025-02-26 13:34:40Å&3!2025-02-26 13:34:40Å%3d2025-02-26 13:34:40Å$322025-02-26 13:34:40Å#3m2025-02-26 13:34:40Å"3E2025-02-26 13:34:40Å!3 é2025-02-26 13:34:40Å 3 ˇ2025-02-26 13:34:40Å3ó2025-02-26 13:34:40Å3x2025-02-26 13:34:40Å3®2025-02-26 13:34:40Å3Ò2025-02-26 13:34:40Å3 Ì2025-02-26 13:34:40Å3#2025-02-26 13:34:40Å3 ∏2025-02-26 13:34:40Å3.2025-02-26 13:34:40Å32025-02-26 13:34:40Å3p2025-02-26 13:34:40Å3 µ2025-02-26 13:34:40Å3[2025-02-26 13:34:40Å3m2025-02-26 13:34:40Å3 œ2025-02-26 13:34:40Å3%2025-02-26 13:34:40Å3 ¿2025-02-26 13:34:40Å372025-02-26 13:34:40Å3Ã2025-02-26 13:34:40Å3 Ô2025-02-26 13:34:40Å3∫2025-02-26 13:34:40   Ö ‰»´èrU8˛‚≈®ãnQ4˚ﬂ¬¶âlO2˘‹ø¢ÖiM0˜€æ¢ÜjM0
+
+ˆ
+
+Ÿ
+
+Ω
+
+†
+
+É
+
+f
+
+I
+
+,
+
+	Ú	’	∏	ú		b	E	(	Ó—¥ò{^A$Îœ≥ñz]@#ÈÃØíuX;‰«™éqT8ˇ‚≈©çpS6¸‡√ßämP3˘‹¿£ájM1¯€æ¢ÖhL/É3Ã2025-02-26 13:36:18É32025-02-26 13:36:18É3<2025-02-26 13:36:18É3h2025-02-26 13:36:18É3Ø2025-02-26 13:36:18É3N2025-02-26 13:36:18É3 ‘2025-02-26 13:36:18É3!2025-02-26 13:36:18É3Ü2025-02-26 13:36:18É32025-02-26 13:36:18É3j2025-02-26 13:36:18É
+
+3P2025-02-26 13:36:18É	3 Á2025-02-26 13:36:18É32025-02-26 13:36:18É3_2025-02-26 13:36:18É342025-02-26 13:36:18É3(2025-02-26 13:36:18É3 ˙2025-02-26 13:36:18É3ú2025-02-26 13:36:18É3Ô2025-02-26 13:36:18É32025-02-26 13:36:18É 3 Õ2025-02-26 13:36:18Ç3:2025-02-26 13:36:18Ç~3M2025-02-26 13:36:18Ç}3|2025-02-26 13:36:18Ç|332025-02-26 13:36:18Ç{3 Ó2025-02-26 13:36:18Çz3ë2025-02-26 13:36:18Çy32025-02-26 13:36:18Çx3b2025-02-26 13:36:18Çw3 »2025-02-26 13:36:18Çv3z2025-02-26 13:36:18Çu3T2025-02-26 13:36:18Çt3ó2025-02-26 13:36:18Çs3G2025-02-26 13:36:18Çr3%2025-02-26 13:36:18Çq3)2025-02-26 13:36:18Çp32025-02-26 13:36:18Ço3’2025-02-26 13:36:18Çn32025-02-26 13:36:18Çm3Y2025-02-26 13:36:18Çl3H2025-02-26 13:36:18Çk3 á2025-02-26 13:36:18Çj3f2025-02-26 13:36:18Çi3 é2025-02-26 13:36:18Çh32025-02-26 13:36:18Çg3É2025-02-26 13:36:18Çf3 ì2025-02-26 13:36:18Çe3U2025-02-26 13:36:18Çd3@2025-02-26 13:36:18Çc3ﬂ2025-02-26 13:36:18Çb3g2025-02-26 13:36:18Ça32025-02-26 13:36:18Ç`3}2025-02-26 13:36:18Ç_3 π2025-02-26 13:36:18Ç^392025-02-26 13:36:18Ç]3‚2025-02-26 13:36:18Ç\3X2025-02-26 13:36:18Ç[3«2025-02-26 13:36:18ÇZ3u2025-02-26 13:36:18ÇY3]2025-02-26 13:36:18ÇX3í2025-02-26 13:36:18ÇW3W2025-02-26 13:36:18ÇV3 †2025-02-26 13:36:18ÇU3K2025-02-26 13:36:18ÇT3¢2025-02-26 13:36:18ÇS3Œ2025-02-26 13:36:18ÇR32025-02-26 13:36:18ÇQ3
+
+2025-02-26 13:36:18ÇP3{2025-02-26 13:36:18ÇO3Ê2025-02-26 13:36:18ÇN3 æ2025-02-26 13:36:18ÇM3 …2025-02-26 13:36:18ÇL3∞2025-02-26 13:36:18ÇK3y2025-02-26 13:36:18ÇJ3l2025-02-26 13:36:18ÇI3|2025-02-26 13:36:18ÇH3 µ2025-02-26 13:36:18ÇG32025-02-26 13:36:18ÇF3 £2025-02-26 13:36:18ÇE3¬2025-02-26 13:36:18ÇD3ƒ2025-02-26 13:36:18ÇC3ä2025-02-26 13:36:18ÇB3*2025-02-26 13:36:18ÇA3 ﬂ2025-02-26 13:36:18Ç@3&2025-02-26 13:36:18Ç?3J2025-02-26 13:36:18Ç>3¿2025-02-26 13:36:18Ç=3A2025-02-26 13:36:18Ç<362025-02-26 13:36:18Ç;3≥2025-02-26 13:36:18Ç:3¡2025-02-26 13:36:18Ç932025-02-26 13:36:18Ç83@2025-02-26 13:36:18Ç73O2025-02-26 13:36:18Ç63ê2025-02-26 13:36:18Ç53y2025-02-26 13:36:18Ç43G2025-02-26 13:36:18Ç332025-02-26 13:36:18Ç2312025-02-26 13:36:18Ç13$2025-02-26 13:36:18Ç032025-02-26 13:36:18Ç/32025-02-26 13:36:18Ç.3á2025-02-26 13:36:18Ç-3'2025-02-26 13:36:18Ç,3≠2025-02-26 13:36:18Ç+32025-02-26 13:36:18Ç*3~2025-02-26 13:36:18Ç)3-2025-02-26 13:36:18Ç(3 ˘2025-02-26 13:36:18Ç'3 ò2025-02-26 13:36:18Ç&3B2025-02-26 13:36:18Ç%32025-02-26 13:36:18Ç$3 °2025-02-26 13:36:18Ç#3I2025-02-26 13:36:18Ç"3 Ê2025-02-26 13:36:18Ç!32025-02-26 13:36:18Ç 3£2025-02-26 13:36:18Ç3¥2025-02-26 13:36:18Ç3Ä2025-02-26 13:36:18Ç3©2025-02-26 13:36:18Ç3d2025-02-26 13:36:18Ç3‹2025-02-26 13:36:18Ç3k2025-02-26 13:36:18Ç3 ç2025-02-26 13:36:18Ç3  2025-02-26 13:36:18Ç3æ2025-02-26 13:36:18Ç3¶2025-02-26 13:36:18Ç3 ˛2025-02-26 13:36:18Ç3v2025-02-26 13:36:18Ç3v2025-02-26 13:36:18Ç3U2025-02-26 13:36:18Ç3t2025-02-26 13:36:18
+
+Q˚´]N…ÙﬁÌ~tÖÉëw ∫∑ä‡7†§Â_Ø≤odÒ¡'πW	GÔŸŒ?7òˇ˘—åÿOæ¡∆lg'/˜Á÷–>Fú…UÈ·î{ß/B	j®áá>H	ö
+
+É
+
+ˆMw
+
+>„(	∑ù
+
+#
+
+,	s
+
+ñ°`I			G
+
+®Û∫Äƒ §0	 	Cs
+
+5d
+
+ü
+
+P
+
+œ;º·	ÁÕ	˚◊
+
+
+
+±ﬂXÑ	9aN≠’ñmâv6'-& 
+
+ˇbì≤VêﬁC≈
+
+yœ~	ÜÄÁÏ¸$
+
+Ï
+
+[s
+
+	›	Òä
+
+ª	”	/√∞îÃÎ¯
+
+o∞1?uZP≤©ûŸˆDXl¶ˇı		%	a	W	L	|	ê	Æ	£	¿
+
+
+
+
+
+Q
+
+G
+
+e
+
+å
+
+≈
+
+‚
+
+ÿ	9i}öÀ¡∑È8kaWó4* ¯Ó©ª0’j{çüÂ‹” ¡∏Ø¶ùîãÇypg^ULC:1(%6ù“∫p\||!+/¯¢Õæ ìMf(vÁN"h»‰¨bòâ2”ÜJ…ß˙¢‹@^IÓ4`?rÙ,Xéø*Ê‡C˛l5›Í9øÁzÑ£Têò   	n 	Ym	Hl 
+
+ ák	fj6  éi	h	Ég^  ìf	Ueh 
+
+@d	ﬂcö 2gb| 
+
+a	}`ö  π_	9^	‚]! }X\	«[˙ CuZ]Y	íX˙ WW	 †V	KU	¢T	ŒS! R	
+
+Q	{P	ÊO¢w æN	 …M	∞Lé ;yKò 1lJò '|I	 µH	G¢ 
+
+ £F	¬E	ƒDÑäC… '*BÒ  ﬂA	&@Ò 	J?	¿>Ò A=	6<	≥;	¡:!9@8O7	ê6v Vy5< 	G4	3	12b $1± 	0	/	á.v 
+
+'-	≠, ú+ì 	~*	-)±  ˘(± 
+
+ ò'	B& /%	 °$◊ 	I#	 Ê" 	!	£ 	¥ 
+
+Ä	© 
+
+d	<ì8
+
+7£5∫4Ü3|1ö.Ω-©+Â*)q$1R9%÷√§à«0¶	Ò ú	Ó ≥	Ï º	Í ¡	È Â	Â Ú	„ œ	€ Ü ¸D ˚	. ò	- ©k ¯	 ® ˜& ˆ	 ‹ ı	 ˘ Ù	 Û5QÚ4y	3 › Ô	 – Ó	 ÿ Ì	: Å( Î	 „ Í<kÈ	 ∑ Ën Á	E Œ	> ƒ	 Ø ‰	( „| ‚	N È	 ü ‡UOﬂ	 π ﬁ	V 	 ™ ‹H €	 © ⁄	 º Ÿ, ÿYs◊	& ÷G ’	 ‘	 Ü ”	 ä “	 Å —	 –^Sœ	\ âC Õ	d •= À	f Ω	 …	 ô »a «	o Ò		m ìii √1 ¬	p ñ	 € ¿	s Ê æ|uΩ	xn* ª	 Ñ\ π	 ∏	 Ú ∑	 Ö ∂	 Ù µ	 á ¥Åx≥	 ã ≤Çm±- ∞. Øj Æ' ≠	å ±	ä ﬂ	 Ó ™	è ˘	  ®	 — ß! ¶	ó ü2 §m £E ¢	 é °	 ˇ †	£ Öx û	® ù	¶ ·	 Ì õ# ö	 ∏ ô	©   ó	¨ ∆	 µ ï[ î	≤ ◊	 œ í% ë	 ¿ ê7 è	¥ ¨	 Ô çµtå ã	 ƒ ä	∫ åT à	 ° á¬rÜ	¡ ≈	¿ ø	 ¢ É	 è Ç	√ ´F Ä Á ¯~U
+
+|N{)z	ú	« Ï	w;vè 	“ ∫	Ã é	À Ã,q ⁄p	o   x	Ÿ ˙5lÛf øjÙ}Lhgñ «e ‡dcb ¶a ` »_M^ Ë] ≥\ ´[)ZYrX êW ùVpgT! òR	È £PåNM	 ˘L	 ‚K	J	©I	JH	gG	°F	E	çD	5C	 €B	®A	 Á@	9?	 ‰>	Ü=	p<	™;	Ø:	9	œ8	7	 ’6	}5	(4	·3	92	e1	<0	-/	s.	Ì-	 π,	[+	`*	p)	(	§'	&	 Ö%	$$	#	"	!	 	 £	H	L	Ç	Ò	#				M	 ˝	 â	Å	 »	K	%	1	B	ﬂ	¥	w		 Ω
+
+	T		c	ƒ	>		’	‘	 ›		=
+
+a=¡ h_≥VMD—";	(2) ™R¸;ÛÍ·ÿœ	∆Ω≥•∑©üïãüDÅwmo+G˙cYOE–	;1Ω+åº'‹e¯	™ Ì⁄ˇıïÎ·H◊Õ√πØ[•»≥Ó†õë!	á5	E}sãi_URKA«‰7-#	;‘}ñ[(s
+
+˚eW©x≥ë	Q
+
+Ò
+
+Á
+
+›
+
+”
+
+…3
+
+ø
+
+µÌ
+
+´x
+
+°⁄
+
+ó
+
+ç
+
+É
+
+y?
+
+o
+
+eﬁ∆>
+
+[˜
+
+QeÇ	1
+
+G
+
+=ü
+
+3
+
+)
+
+)∆
+
+⁄=
+
+–
+
+æ	˜	Ì˜õ	„	Ÿ	œ	≈	ª¥	±ÇÒ	ß	ùÊ“	ìá	â		u	kï	a©˚2ùΩ5ËÉ‰6ÃNS|¶¡fôo‰#ﬂo\√yIÇå¶ˆ¢¸Ïñì¿åƒ∂\¨∫Öú,L/t¸ﬁ‘Èy8èØio~â¡ﬂÛí`%∞àŒ.?˝ W’IMu$‚†ËrCÿÚaπB	WÀË’V9jÚki	Ë	ö	i	S	∑	Ù 	#	»	Y	$	 ˚	%	C	 ´		d	0	 ‚	Ë	ö	i	S	∑	Ù	l	 
+
+			 µG		πm/	Ÿg 	Äˇ	∞˛	 ü˝	q¸	(˚A˙e˘	 ◊¯+˜	;ˆ	[ı>Ù	 «ÛVÚ	Ò	 ¸%Ô	 ∏Ó	 ≥Ì	xÏeÎ	`Í	®Ë	 ¿Á	 ÙÊd#	x‰	∂„	‚	Å·	^‡	 àﬂ	ßﬁ	s›	´‹	 Ø€	c⁄		Ÿ	îÿ	 ®◊r&	ï’	 ◊‘	O”	“	 Í—	≈–	≤œ	Œ	€Õ	 ‚Ã	◊À	 © 	 ≤…	Ú»8)	E∆	≈	 ¨ƒ*	é¬	¡	3¿l/	Væj1	zº	 ª~2	Èπ	 ú∏	\∑E∂	 ‹µ	ç¥	Æ≥	™≤	<±	∞	 ËØHÆo≠	 í¨	Z´	R™4m®	 üß76	[•Ø 		S¢	N°	›†	aü	∑û	 âù	O ú	 ãõK7	 Îô	Mò	ãó9	Ãï	î@?	hí	ØëNê	 ‘è	!é	ÜçxIjã	Pä	 ÁâbJ	_áyK	(Ö	 ˙Ñ	úÉ	ÔÇ	Å	 ÕÄ	:M~	|}'O	 Ó{	ëz	y	bx	 »wzvTu	ót	Gs	%rq )	≈ 	Í	Ë 	ÊO	‚]	ﬂc	‹	’o	ŒS	«[	ƒD	¬E	¡:	¿>	æ	¥	≥;	∞L	≠,	©	¶	£ 	¢T	ô	ò ˛	íX	ê6	äC	á.	Ég	Ä	~	}`	{P	yK	v	u ˝	q	lJ	gb	fj	d	Ue	KU	J	Hl	B&	A=	@d	9^	6<	12	-)	*B	'-	&@			a	
+
+Q	h	/	n	+	3	G	 ˛	 ˘(	 ˜ ˇ	 È		 Ê"	 ﬂA	 ﬁ	  	 …M	 æN	 π_	 ∂	 µH	 £F	 °$	 †V	 ò'	 ìf	 éi	 ç	 ák~*|Iy5vuZtsk`]YYmX\WWUO7J?I#G4D@8  8
+
+  Ü*$1R9%  Y0!Ù}Ûf	Ò úU	Ó ≥	Ï º	Í ¡	È Â	Â Ú	„ œ	€ Ü	Ÿ ˙	“ ∫	Ã é	À Ã	« Ï	√ ´Y	ñXBW	 ŒV	U_T	 õS	 …R	 ƒQ	 ∑P	KN	 ¯M	 ÚL	…H	ÒG	 ÌF	E	ùD	õC	tB	8A	 ˇ@	ƒ>	 ›=	‚<	.;	È:	 „8	5	43	-0	 —.	 â-	1,	 Õ+	 ∫(	7'	≠%	v$	 •"	 ê!   Ñ, ‰«™çqT9ˇ‚≈®ãoS6˝·≈®ãnR6¸ﬂ¬•àkO2¯‹ø¢ÜiM0
+
+ˆ
+
+⁄
+
+Ω
+
+†
+
+É
+
+g
+
+J
+
+-
+
+	Û	÷	π	ú		b	E	(	Ó—µò{^A$ÍÕ∞ìvY<Ê…¨êsW: ‰«™éqU8ˇ‚∆™çpS6˝‡ƒ®ãnR6¸ﬂ¬•àkN1˜⁄Ω†ÉfI,                            Ñ3 ˚2025-02-26 13:37:32Ñ3%2025-02-26 13:37:32Ñ3C2025-02-26 13:37:32Ñ3 ´2025-02-26 13:37:32Ñ32025-02-26 13:37:32Ñ3d2025-02-26 13:37:32Ñ302025-02-26 13:37:32Ñ3 ‚2025-02-26 13:37:32Ñ3Ë2025-02-26 13:37:32Ñ3ö2025-02-26 13:37:32Ñ3i2025-02-26 13:37:32Ñ3S2025-02-26 13:37:32Ñ3∑2025-02-26 13:37:32Ñ3Ù2025-02-26 13:37:32Ñ3l2025-02-26 13:37:32Ñ
+
+3 2025-02-26 13:37:32Ñ	32025-02-26 13:37:32Ñ3 µ2025-02-26 13:37:32Ñ32025-02-26 13:37:32Ñ3G2025-02-26 13:37:32Ñ32025-02-26 13:37:32Ñ3π2025-02-26 13:37:32Ñ3m2025-02-26 13:37:32Ñ3/2025-02-26 13:37:32Ñ3Ÿ2025-02-26 13:37:32Ñ 3g2025-02-26 13:37:32É3Ä2025-02-26 13:37:32É~3∞2025-02-26 13:37:32É}3 ü2025-02-26 13:37:32É|3q2025-02-26 13:37:32É{3(2025-02-26 13:37:32Éz3A2025-02-26 13:37:32Éy3e2025-02-26 13:37:32Éx3 ◊2025-02-26 13:37:32Éw3+2025-02-26 13:37:32Év3;2025-02-26 13:37:32Éu3[2025-02-26 13:37:32Ét3>2025-02-26 13:37:32És3 «2025-02-26 13:37:32Ér3V2025-02-26 13:37:32Éq32025-02-26 13:37:32Ép3 ¸2025-02-26 13:37:32Éo3%2025-02-26 13:37:32Én3 ∏2025-02-26 13:37:32Ém3 ≥2025-02-26 13:37:32Él3x2025-02-26 13:37:32Ék3e2025-02-26 13:36:18Éj3`2025-02-26 13:36:18Éi3	2025-02-26 13:36:18Éh3®2025-02-26 13:36:18Ég3 ¿2025-02-26 13:36:18Éf3 Ù2025-02-26 13:36:18Ée3+2025-02-26 13:36:18Éd3x2025-02-26 13:36:18Éc3∂2025-02-26 13:36:18Éb32025-02-26 13:36:18Éa3Å2025-02-26 13:36:18É`3^2025-02-26 13:36:18É_3 à2025-02-26 13:36:18É^3ß2025-02-26 13:36:18É]3s2025-02-26 13:36:18É\3´2025-02-26 13:36:18É[3 Ø2025-02-26 13:36:18ÉZ3c2025-02-26 13:36:18ÉY3	2025-02-26 13:36:18ÉX3î2025-02-26 13:36:18ÉW3 ®2025-02-26 13:36:18ÉV32025-02-26 13:36:18ÉU3ï2025-02-26 13:36:18ÉT3 ◊2025-02-26 13:36:18ÉS3O2025-02-26 13:36:18ÉR32025-02-26 13:36:18ÉQ3 Í2025-02-26 13:36:18ÉP3≈2025-02-26 13:36:18ÉO3≤2025-02-26 13:36:18ÉN32025-02-26 13:36:18ÉM3€2025-02-26 13:36:18ÉL3 ‚2025-02-26 13:36:18ÉK3◊2025-02-26 13:36:18ÉJ3 ©2025-02-26 13:36:18ÉI3 ≤2025-02-26 13:36:18ÉH3Ú2025-02-26 13:36:18ÉG32025-02-26 13:36:18ÉF3E2025-02-26 13:36:18ÉE32025-02-26 13:36:18ÉD3 ¨2025-02-26 13:36:18ÉC32025-02-26 13:36:18ÉB3é2025-02-26 13:36:18ÉA32025-02-26 13:36:18É@332025-02-26 13:36:18É?3?2025-02-26 13:36:18É>3V2025-02-26 13:36:18É=3.2025-02-26 13:36:18É<3z2025-02-26 13:36:18É;3 2025-02-26 13:36:18É:352025-02-26 13:36:18É93È2025-02-26 13:36:18É83 ú2025-02-26 13:36:18É73\2025-02-26 13:36:18É63E2025-02-26 13:36:18É53 ‹2025-02-26 13:36:18É43ç2025-02-26 13:36:18É33Æ2025-02-26 13:36:18É23™2025-02-26 13:36:18É13<2025-02-26 13:36:18É032025-02-26 13:36:18É/3 Ë2025-02-26 13:36:18É.3H2025-02-26 13:36:18É-3o2025-02-26 13:36:18É,3 í2025-02-26 13:36:18É+3Z2025-02-26 13:36:18É*3R2025-02-26 13:36:18É)3-2025-02-26 13:36:18É(3m2025-02-26 13:36:18É'3 ü2025-02-26 13:36:18É&32025-02-26 13:36:18É%3[2025-02-26 13:36:18É$32025-02-26 13:36:18É#372025-02-26 13:36:18É"3S2025-02-26 13:36:18É!3N2025-02-26 13:36:18É 3›2025-02-26 13:36:18É3a2025-02-26 13:36:18É3∑2025-02-26 13:36:18É3 â2025-02-26 13:36:18É	32025-02-26 13:36:18É3 ã2025-02-26 13:36:18É312025-02-26 13:36:18É3 Î2025-02-26 13:36:18É3M2025-02-26 13:36:18É3ã2025-02-26 13:36:18É32025-02-26 13:36:18   ? „∆©åoS6¸‡√¶ämP4˚ﬁ¡§àkO3˙›¡•àlO2¯€ø¢ÖhK.
+
+Ù
+
+◊
+
+∫
+
+û
+
+Ç
+
+f
+
+I
+
+,
+
+	Û	÷	π	ú		c	F	)	œ                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ÑY=2025-03-27T08:31:05.315ZÑX3ñ2025-02-26 13:37:32ÑW3B2025-02-26 13:37:32ÑV3 Œ2025-02-26 13:37:32ÑU32025-02-26 13:37:32ÑT3_2025-02-26 13:37:32ÑS3 õ2025-02-26 13:37:32ÑR3 …2025-02-26 13:37:32ÑQ3 ƒ2025-02-26 13:37:32ÑP3 ∑2025-02-26 13:37:32ÑO3'2025-02-26 13:37:32ÑN3K2025-02-26 13:37:32ÑM3 ¯2025-02-26 13:37:32ÑL3 Ú2025-02-26 13:37:32ÑK3y2025-02-26 13:37:32ÑJ3b2025-02-26 13:37:32ÑI3x2025-02-26 13:37:32ÑH3…2025-02-26 13:37:32ÑG3Ò2025-02-26 13:37:32ÑF3 Ì2025-02-26 13:37:32ÑE32025-02-26 13:37:32ÑD3ù2025-02-26 13:37:32ÑC3õ2025-02-26 13:37:32ÑB3t2025-02-26 13:37:32ÑA382025-02-26 13:37:32Ñ@3 ˇ2025-02-26 13:37:32Ñ?3@2025-02-26 13:37:32Ñ>3ƒ2025-02-26 13:37:32Ñ=3 ›2025-02-26 13:37:32Ñ<3‚2025-02-26 13:37:32Ñ;3.2025-02-26 13:37:32Ñ:3È2025-02-26 13:37:32Ñ932025-02-26 13:37:32Ñ83 „2025-02-26 13:37:32Ñ73K2025-02-26 13:37:32Ñ6372025-02-26 13:37:32Ñ532025-02-26 13:37:32Ñ432025-02-26 13:37:32Ñ3342025-02-26 13:37:32Ñ23~2025-02-26 13:37:32Ñ13j2025-02-26 13:37:32Ñ03-2025-02-26 13:37:32Ñ/3l2025-02-26 13:37:32Ñ.3 —2025-02-26 13:37:32Ñ-3 â2025-02-26 13:37:32Ñ,312025-02-26 13:37:32Ñ+3 Õ2025-02-26 13:37:32Ñ*32025-02-26 13:37:32Ñ)382025-02-26 13:37:32Ñ(3 ∫2025-02-26 13:37:32Ñ'372025-02-26 13:37:32Ñ&3r2025-02-26 13:37:32Ñ%3≠2025-02-26 13:37:32Ñ$3v2025-02-26 13:37:32Ñ#3d2025-02-26 13:37:32Ñ"3 •2025-02-26 13:37:32Ñ!3 ê2025-02-26 13:37:32Ñ 3≈2025-02-26 13:37:32Ñ32025-02-26 13:37:32Ñ32025-02-26 13:37:32Ñ3#2025-02-26 13:37:32Ñ3»2025-02-26 13:37:32Ñ3Y2025-02-26 13:37:32Ñ3$2025-02-26 13:37:32./data/.gitkeep
+
+./Dockerfile
+
+FROM node:22
+
+
+
+WORKDIR /tap/app
+
+
+
+# Install Python, build dependencies, SQLite, and additional tools
+
+RUN apt-get update && apt-get install -y \
+
+    curl \
+
+    git \
+
+    python3 \
+
+    python3-pip \
+
+    python3-dev \
+
+    build-essential \
+
+    sqlite3 \
+
+    libsqlite3-dev \
+
+    && rm -rf /var/lib/apt/lists/*
+
+    
+
+COPY package*.json ./
+
+
+
+RUN npm install
+
+
+
+# Copy app source code, excluding /tap/data/projects.db (if in .dockerignore)
+
+COPY . .
+
+
+
+EXPOSE 8080
+
+
+
+# Run as root (explicit for clarity)
+
+USER root
+
+
+
+CMD ["npm", "run", "start"]
+
+./src/bin/server.ts
+
+require('dotenv').config()
+
+import * as http from 'http'
+
+import ip from 'ip'
+
+import app from '../app'
+
+import logger from '../v1/helpers/logger'
+
+import { closeConnection } from '../v1/infrastructure/persistance/database/db_connection/connectionFile'
+
+
+
+const urlBase: string = 'api/v1'
+
+
+
+const localIp: string = ip.address()
+
+
+
+const port: number = Number(process.env.API_PORT) || 8080
+
+
+
+const server: http.Server = http.createServer(app)
+
+
+
+// Graceful shutdown
+
+const shutdown = async () => {
+
+  try {
+
+    await closeConnection()
+
+    process.exit(0)
+
+  } catch (error) {
+
+    logger.error('Error during shutdown:', error)
+
+    process.exit(1)
+
+  }
+
+}
+
+
+
+server.on('error', async (error) => {
+
+  logger.error(JSON.stringify(error))
+
+  await shutdown()
+
+  process.exit(1)
+
+})
+
+
+
+server.on('listening', async () => {
+
+  if (!process.env.production) logger.info(`app running ... api documentation on localhost:${port} or http://${localIp}:${port}/${urlBase}/doc3/apiDocumentation`)
+
+})
+
+
+
+// Setup process handlers
+
+process.on('SIGTERM', shutdown)
+
+process.on('SIGINT', shutdown)
+
+
+
+server.listen(port)
+
+./src/app.ts
+
+require('dotenv').config()
+
+import express, { Request, Response, NextFunction } from 'express'
+
+import allRoutes from './v1/presentation/routes' // Fixed import path
+
+import swaggerUi from 'swagger-ui-express'
+
+import { swaggerSpec } from './v1/helpers/apiDocumentation/v3'
+
+import helmet from 'helmet'
+
+import cors from 'cors'
+
+import logger from './v1/helpers/logger'
+
+
+
+const app = express()
+
+const urlBase: string = 'api/v1'
+
+
+
+if (process.env.NODE_ENV !== 'production') {
+
+  // OpenAPI V3
+
+  app.use(`/${urlBase}/doc3/apiDocumentation`, swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+
+}
+
+
+
+app.use(helmet())
+
+app.use(cors())
+
+app.use(express.json())
+
+
+
+// Redirect root URL to OpenAPI V3 documentation
+
+app.get('/', (req: Request, res: Response) => {
+
+  return res.redirect(301, `/${urlBase}/doc3/apiDocumentation`) // Changed to 301 Permanent Redirect
+
+})
+
+
+
+app.use(`/${urlBase}/projects`, allRoutes) // Updated to match project endpoints
+
+
+
+const handleNotFound = (req: Request, res: Response, next: NextFunction) => {
+
+  if (res.headersSent) {
+
+    return next()
+
+  }
+
+  return res.status(404).json({ message: 'Not Found' })
+
+}
+
+
+
+const handleError = (err: Error, req: Request, res: Response) => {
+
+  logger.error(err.stack)
+
+
+
+  let statusCode = 500
+
+
+
+  if (err.name === 'ValidationError') statusCode = 400
+
+  else if (err.name === 'UnauthorizedError') statusCode = 401
+
+  else if (err.name === 'ForbiddenError') statusCode = 403
+
+  else;
+
+
+
+  const errorResponse = {
+
+    message: 'Internal Server Error',
+
+    error: process.env.NODE_ENV === 'development' ? err.message : ''
+
+  }
+
+
+
+  res.status(statusCode).json(errorResponse)
+
+}
+
+
+
+app.use(handleNotFound)
+
+app.use(handleError)
+
+
+
+export default app
+
+./src/v1/infrastructure/persistance/database/entity.ts
+
+import { Entity, PrimaryColumn, Column } from 'typeorm'
+
+
+
+@Entity('projects')
+
+export class Project {
+
+  @PrimaryColumn()
+
+  id!: number
+
+
+
+  @Column()
+
+  name!: string
+
+
+
+  @Column()
+
+  created_at!: string
+
+}
+
+
+
+@Entity('users')
+
+export class User {
+
+  @PrimaryColumn()
+
+  id!: number
+
+
+
+  @Column()
+
+  first_name!: string
+
+
+
+  @Column()
+
+  last_name!: string
+
+
+
+  @Column()
+
+  created_at!: string
+
+}
+
+
+
+@Entity('projects_members')
+
+export class ProjectMember {
+
+  @PrimaryColumn()
+
+  project_id!: number
+
+
+
+  @PrimaryColumn()
+
+  user_id!: number
+
+
+
+  @Column()
+
+  created_at!: string
+
+}
+
+./src/v1/infrastructure/persistance/database/index.dto.ts
+
+export type ProjectMemberQueryResult = {
+
+  id: number
+
+  first_name: string
+
+  last_name: string
+
+  groups: string
+
+}
+
+./src/v1/infrastructure/persistance/database/index.ts
+
+import { getConnection } from './db_connection/connectionFile'
+
+import { ProjectMember, User } from './entity'
+
+import logger from '../../../helpers/logger'
+
+import { ProjectMemberQueryResult } from './index.dto'
+
+
+
+export const getProjectMembers = async (projectId: number) => {
+
+  const connection = await getConnection()
+
+
+
+  const query = `
+
+    SELECT 
+
+      u.id, 
+
+      u.first_name, 
+
+      u.last_name, 
+
+      GROUP_CONCAT(pm2.project_id) AS groups
+
+    FROM projects_members pm
+
+    JOIN users u ON pm.user_id = u.id
+
+    LEFT JOIN projects_members pm2 ON pm2.user_id = u.id
+
+    WHERE pm.project_id = '${projectId}'
+
+    GROUP BY u.id, u.first_name, u.last_name;
+
+  `
+
+
+
+  try {
+
+    const members = await connection.query(query)
+
+
+
+    return await members.map((m: ProjectMemberQueryResult) => ({
+
+      id: m.id,
+
+      name: `${m.first_name} ${m.last_name}`,
+
+      groups: m.groups.split(',').map((x) => String.fromCharCode(Number(x) + 65))
+
+    }))
+
+  } catch (error) {
+
+    logger.error('Error executing getProjectMembers query:', String(error))
+
+    throw new Error(`Failed to fetch project members: ${error instanceof Error ? error.message : String(error)}`)
+
+  }
+
+}
+
+
+
+export const addProjectMember = async (projectId: number, userId: number) => {
+
+  const connection = await getConnection()
+
+  const userRepo = connection.getRepository(User)
+
+  const memberRepo = connection.getRepository(ProjectMember)
+
+
+
+  try {
+
+    const user = await userRepo.findOne({ where: { id: userId } })
+
+    if (!user) throw new Error('User not found')
+
+
+
+    await memberRepo.insert({
+
+      project_id: projectId,
+
+      user_id: userId,
+
+      created_at: new Date().toISOString()
+
+    })
+
+
+
+    return user
+
+  } catch (error) {
+
+    logger.error('Error adding project member:', error)
+
+    throw new Error(`Failed to add project member: ${error instanceof Error ? error.message : String(error)}`)
+
+  }
+
+}
+
+
+
+export const removeProjectMember = async (projectId: number, userId: number) => {
+
+  const connection = await getConnection()
+
+  const memberRepo = connection.getRepository(ProjectMember)
+
+
+
+  try {
+
+    const result = await memberRepo.delete({
+
+      project_id: projectId,
+
+      user_id: userId
+
+    })
+
+
+
+    if (result.affected === 0) {
+
+      throw new Error('Member not found in this project')
+
+    }
+
+  } catch (error) {
+
+    logger.error('Error removing project member:', error)
+
+    throw new Error(`Failed to remove project member: ${error instanceof Error ? error.message : String(error)}`)
+
+  }
+
+}
+
+./src/v1/infrastructure/persistance/database/db_connection/connectionFile.ts
+
+import path from 'path'
+
+import { DataSource, DataSourceOptions } from 'typeorm'
+
+
+
+let connection: DataSource | null = null
+
+
+
+const getConnectionOptions = async () => {
+
+  const op = {
+
+    type: 'sqlite',
+
+    database: path.join(__dirname, '../../../../../../data/projects.db'),
+
+    entities: [path.join(__dirname, '../entity.*s')],
+
+    synchronize: false,
+
+    logging: process.env.NODE_ENV !== 'production'
+
+  }
+
+
+
+  return op
+
+}
+
+
+
+export const getConnection = async (): Promise<DataSource> => {
+
+  if (connection && connection.isInitialized) return connection
+
+
+
+  const options = await getConnectionOptions()
+
+
+
+  connection = new DataSource(options as DataSourceOptions)
+
+
+
+  await connection.initialize()
+
+
+
+  return connection
+
+}
+
+
+
+export const closeConnection = async (): Promise<void> => {
+
+  if (connection && connection.isInitialized) {
+
+    await connection.destroy()
+
+    connection = null
+
+  }
+
+}
+
+./src/v1/helpers/logger/index.ts
+
+import winston, { transports } from 'winston'
+
+
+
+const logger = winston.createLogger({
+
+  format: winston.format.combine(
+
+    winston.format.errors({ stack: true }), // Important for error handling
+
+    winston.format.timestamp(),
+
+    winston.format.printf(({ level, message, timestamp, stack }) => {
+
+      let logMessage = `${timestamp} ${level}: ${message}`
+
+
+
+      if (typeof stack === 'string') {
+
+        const stackLines = stack.split('\n')
+
+        // The second line of the stack trace typically contains the file and line number
+
+        const errorLocation = stackLines[1]?.trim() || 'Unknown location'
+
+        logMessage += `\n[${errorLocation}]`
+
+      } else if (stack) {
+
+        // Handle cases where stack exists but is not a string (e.g., custom error objects)
+
+        logMessage += '\n[Stack trace unavailable]'
+
+      }
+
+
+
+      return logMessage
+
+    })
+
+  ),
+
+  exceptionHandlers: [new transports.File({ filename: './logs/exceptions.log' })]
+
+})
+
+if (process.env.NODE_ENV === 'production') {
+
+  logger.level = 'error'
+
+  logger.add(
+
+    new transports.File({
+
+      level: 'error',
+
+      filename: './logs/error.log',
+
+      handleRejections: true
+
+    })
+
+  )
+
+} else {
+
+  logger.level = process.env.LOGLEVEL || 'debug'
+
+  logger.add(new transports.Console())
+
+}
+
+
+
+export default logger
+
+./src/v1/helpers/apiDocumentation/v3/index.ts
+
+export const swaggerSpec = {
+
+  openapi: '3.0.3',
+
+  info: {
+
+    title: 'Project Members API',
+
+    description: 'A REST API for managing project members, including recursive group membership retrieval.',
+
+    version: '1.0.0',
+
+    contact: {
+
+      name: 'Gary Johnson',
+
+      email: 'gary.johnson.freelance@gmail.com',
+
+      url: 'https://github.com/gary003'
+
+    },
+
+    license: {
+
+      name: 'MIT',
+
+      url: 'https://opensource.org/licenses/MIT'
+
+    }
+
+  },
+
+  servers: [
+
+    {
+
+      url: 'http://localhost:8080/api/v1',
+
+      description: 'Local development server'
+
+    }
+
+  ],
+
+  paths: {
+
+    '/projects/{id}/members': {
+
+      get: {
+
+        tags: ['project'],
+
+        summary: 'Retrieve project members recursively',
+
+        description: 'Fetches a flattened list of members for a specific project, including users and members of nested groups (up to 5 levels).',
+
+        operationId: 'getProjectMembers',
+
+        parameters: [
+
+          {
+
+            name: 'id',
+
+            in: 'path',
+
+            required: true,
+
+            description: 'The ID of the project to retrieve members for.',
+
+            schema: {
+
+              type: 'integer',
+
+              example: 1
+
+            }
+
+          }
+
+        ],
+
+        responses: {
+
+          '200': {
+
+            description: 'A list of project members, including their group affiliations.',
+
+            content: {
+
+              'application/json': {
+
+                schema: {
+
+                  type: 'array',
+
+                  items: {
+
+                    $ref: '#/components/schemas/Member'
+
+                  }
+
+                },
+
+                example: [
+
+                  { id: 1, name: 'John Doe', groups: [] },
+
+                  { id: 2, name: 'Jane Smith', groups: ['A', 'B'] },
+
+                  { id: 3, name: 'Alice Johnson', groups: ['B'] },
+
+                  { id: 4, name: 'Ben Stevenson', groups: ['A'] }
+
+                ]
+
+              }
+
+            }
+
+          },
+
+          '400': {
+
+            description: 'Bad request (e.g., invalid project ID).',
+
+            content: {
+
+              'application/json': {
+
+                schema: {
+
+                  $ref: '#/components/schemas/Error'
+
+                },
+
+                example: {
+
+                  message: 'Invalid project ID'
+
+                }
+
+              }
+
+            }
+
+          },
+
+          '500': {
+
+            description: 'Server error during member retrieval.',
+
+            content: {
+
+              'application/json': {
+
+                schema: {
+
+                  $ref: '#/components/schemas/Error'
+
+                },
+
+                example: {
+
+                  message: 'Failed to fetch project members: Database error'
+
+                }
+
+              }
+
+            }
+
+          }
+
+        }
+
+      }
+
+    }
+
+  },
+
+  components: {
+
+    schemas: {
+
+      Member: {
+
+        type: 'object',
+
+        properties: {
+
+          id: {
+
+            type: 'integer',
+
+            description: 'The unique ID of the member.',
+
+            example: 1
+
+          },
+
+          name: {
+
+            type: 'string',
+
+            description: 'The full name of the member.',
+
+            example: 'John Doe'
+
+          },
+
+          groups: {
+
+            type: 'array',
+
+            description: 'The names of groups from which the member was included.',
+
+            items: {
+
+              type: 'string'
+
+            },
+
+            example: ['A', 'B']
+
+          }
+
+        },
+
+        required: ['id', 'name', 'groups']
+
+      },
+
+      Error: {
+
+        type: 'object',
+
+        properties: {
+
+          message: {
+
+            type: 'string',
+
+            description: 'A description of the error.'
+
+          }
+
+        },
+
+        required: ['message']
+
+      }
+
+    }
+
+  }
+
+}
+
+./src/v1/helpers/apiDocumentation/v3/docOptions.ts
+
+import { SwaggerUiOptions } from 'swagger-ui-express'
+
+
+
+export const openApiOptions: SwaggerUiOptions = {
+
+  customSiteTitle: 'API Backend Template - OpenAPI 3.0 (Dark Theme)',
+
+  customCss: `
+
+.swagger-ui,
+
+    .swagger-ui .wrapper { background-color: #f5f5f5; color: #212121; }
+
+    .swagger-ui .topbar { background-color: #3f51b5; color: #ffffff; }
+
+    .swagger-ui .topbar a { color: #ffffff; }
+
+    .swagger-ui .scheme-container { background-color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+
+    .swagger-ui .opblock-tag { color: #ffffff; background-color: #3f51b5; }
+
+    .swagger-ui .opblock { background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 4px; }
+
+    .swagger-ui .opblock .opblock-summary { background-color: #fafafa; }
+
+    .swagger-ui .opblock .opblock-summary-method { color: #3f51b5; font-weight: bold; }
+
+    .swagger-ui .opblock .opblock-summary-path { color: #616161; }
+
+    .swagger-ui .opblock-body pre { background-color: #eceff1; color: #212121; }
+
+    .swagger-ui .btn { background-color: #3f51b5; color: #ffffff; border-radius: 4px; }
+
+    .swagger-ui .btn:hover { background-color: #5c6bc0; }
+
+    .swagger-ui input[type="text"], .swagger-ui textarea { background-color: #ffffff; color: #212121; border: 1px solid #e0e0e0; border-radius: 4px; }
+
+  `,
+
+  customfavIcon: '/favicon.ico', // Optional: ensure this exists in public/
+
+  swaggerOptions: {
+
+    defaultModelsExpandDepth: 2,
+
+    displayOperationId: true,
+
+    docExpansion: 'list',
+
+    filter: true,
+
+    tryItOutEnabled: true,
+
+    displayRequestDuration: true
+
+  },
+
+  explorer: true
+
+}
+
+./src/v1/services/index.ts
+
+import { getProjectMembers, addProjectMember, removeProjectMember } from '../infrastructure/persistance/database/'
+
+
+
+export const fetchProjectMembers = async (projectId: number) => {
+
+  try {
+
+    const members = await getProjectMembers(projectId)
+
+    return members
+
+  } catch (error) {
+
+    throw new Error(`Failed to fetch project members: ${error instanceof Error ? error.message : String(error)}`)
+
+  }
+
+}
+
+
+
+export const createProjectMember = async (projectId: number, userId: number) => {
+
+  try {
+
+    const user = await addProjectMember(projectId, userId)
+
+    return {
+
+      id: user.id,
+
+      name: `${user.first_name} ${user.last_name}`, // Combine first_name and last_name
+
+      groups: []
+
+    }
+
+  } catch (error) {
+
+    throw new Error(`Failed to create project member: ${error instanceof Error ? error.message : String(error)}`)
+
+  }
+
+}
+
+
+
+export const deleteProjectMember = async (projectId: number, userId: number): Promise<void> => {
+
+  try {
+
+    await removeProjectMember(projectId, userId)
+
+  } catch (error) {
+
+    throw new Error(`Failed to delete project member: ${error instanceof Error ? error.message : String(error)}`)
+
+  }
+
+}
+
+./src/v1/presentation/routes/index.ts
+
+import express from 'express'
+
+import { fetchProjectMembers, createProjectMember, deleteProjectMember } from '../../services'
+
+import { errorAPIProject } from './error.dto'
+
+
+
+const router = express.Router()
+
+
+
+router.get('/:id/members', async (req, res) => {
+
+  try {
+
+    const projectId = parseInt(req.params.id)
+
+    if (isNaN(projectId)) throw new Error('Invalid project ID')
+
+    const members = await fetchProjectMembers(projectId)
+
+    return res.status(200).json(members)
+
+  } catch (error) {
+
+    return res.status(400).json({ errorPresentation: String(error) })
+
+  }
+
+})
+
+
+
+router.post('/:id/members', async (req, res) => {
+
+  try {
+
+    const projectId = parseInt(req.params.id)
+
+    const { user_ids } = req.body
+
+
+
+    if (isNaN(projectId)) throw new Error('Invalid project ID')
+
+    if (!Array.isArray(user_ids) || user_ids.length === 0) {
+
+      throw new Error('Invalid user_ids')
+
+    }
+
+
+
+    const member = await createProjectMember(projectId, user_ids[0])
+
+    return res.status(201).json(member)
+
+  } catch (err) {
+
+    return res.status(400).json({ presentationError: String(err) })
+
+  }
+
+})
+
+
+
+router.delete('/:projectId/members/:userId', async (req, res) => {
+
+  try {
+
+    const projectId = parseInt(req.params.projectId)
+
+    const userId = parseInt(req.params.userId)
+
+
+
+    if (isNaN(projectId) || isNaN(userId)) throw new Error('Invalid ID')
+
+
+
+    await deleteProjectMember(projectId, userId)
+
+    return res.status(204).send()
+
+  } catch (error) {
+
+    return res.status(400).json({ message: errorAPIProject.invalidId.message, presentationError: String(error) })
+
+  }
+
+})
+
+
+
+export default router
+
+./src/v1/presentation/routes/error.dto.ts
+
+export const errorAPIProject = {
+
+  invalidId: {
+
+    message: 'Invalid project or user ID provided',
+
+    code: 'INVALID_ID',
+
+    status: 400
+
+  },
+
+  invalidInput: {
+
+    message: 'Invalid input data provided',
+
+    code: 'INVALID_INPUT',
+
+    status: 400
+
+  },
+
+  projectNotFound: {
+
+    message: 'Project not found',
+
+    code: 'PROJECT_NOT_FOUND',
+
+    status: 404
+
+  },
+
+  userNotFound: {
+
+    message: 'User not found',
+
+    code: 'USER_NOT_FOUND',
+
+    status: 404
+
+  },
+
+  memberAlreadyExists: {
+
+    message: 'User is already a member of this project',
+
+    code: 'MEMBER_ALREADY_EXISTS',
+
+    status: 409
+
+  },
+
+  memberNotFound: {
+
+    message: 'Member not found in this project',
+
+    code: 'MEMBER_NOT_FOUND',
+
+    status: 404
+
+  },
+
+  internalServerError: {
+
+    message: 'Internal server error',
+
+    code: 'INTERNAL_SERVER_ERROR',
+
+    status: 500
+
+  }
+
+} as const
+
+
+
+export type ProjectErrorType = keyof typeof errorAPIProject
+
+./tests/integration/presentation_routes.test.ts
+
+import chai from 'chai'
+
+import { describe, it, after } from 'mocha'
+
+import request from 'supertest'
+
+import app from '../../src/app'
+
+
+
+describe('Integration tests - presentation:routes', () => {
+
+  const urlBase = 'api/v1'
+
+
+
+  after(async () => {})
+
+
+
+  describe('GET /projects/:id/members', () => {
+
+    it('should get all project members', async () => {
+
+      const response = await request(app).get(`/${urlBase}/projects/1/members`).set('Accept', 'application/json')
+
+
+
+      chai.expect(response.status).to.equal(200)
+
+      chai.expect(response.body).to.be.an('array')
+
+      if (response.body.length > 0) {
+
+        chai.expect(response.body[0]).to.have.property('id')
+
+        chai.expect(response.body[0]).to.have.property('name')
+
+        chai.expect(response.body[0]).to.have.property('groups').that.is.an('array')
+
+      }
+
+    })
+
+
+
+    it('should return an empty array for a project with no members', async () => {
+
+      const response = await request(app).get(`/${urlBase}/projects/5/members`).set('Accept', 'application/json')
+
+
+
+      chai.expect(response.status).to.equal(200)
+
+      chai.expect(response.body).to.be.an('array')
+
+      chai.expect(response.body).to.have.length(0)
+
+    })
+
+  })
+
+
+
+  describe('POST /projects/:id/members', () => {
+
+    it('should add a new member', async () => {
+
+      const newUsersToAdd = [12]
+
+
+
+      const response = await request(app).post(`/${urlBase}/projects/5/members`).send({ user_ids: newUsersToAdd }).set('Accept', 'application/json')
+
+
+
+      chai.expect(response.status).to.equal(201)
+
+      chai.expect(response.body).to.have.property('id')
+
+      chai.expect(response.body).to.have.property('name')
+
+      chai.expect(response.body).to.have.property('groups').that.is.an('array')
+
+    })
+
+  })
+
+
+
+  describe('DELETE /projects/:projectId/members/:userId', () => {
+
+    it('should delete a member', async () => {
+
+      const response = await request(app).delete(`/${urlBase}/projects/5/members/12`).set('Accept', 'application/json')
+
+
+
+      chai.expect(response.status).to.equal(204)
+
+    })
+
+  })
+
+})
+
+./logs/exceptions.log
+
+./eslint.config.mjs
+
+import eslint from '@typescript-eslint/eslint-plugin'
+
+import tsParser from '@typescript-eslint/parser'
+
+
+
+export default [
+
+  {
+
+    files: ['**/*.ts'],
+
+    ignores: ['**/node_modules/**', '**/dist/**', '**/build/**', '**/coverage/**', '**/logs/**', '**/entity.ts'], // Ignore build and dependency folders
+
+    plugins: {
+
+      '@typescript-eslint': eslint
+
+    },
+
+    languageOptions: {
+
+      parser: tsParser,
+
+      parserOptions: {
+
+        ecmaVersion: 'latest',
+
+        sourceType: 'module'
+
+      }
+
+    },
+
+    rules: {
+
+      // General Code Quality Rules
+
+      'no-unused-vars': 'warn', // Disable base rule in favor of @typescript-eslint/no-unused-vars
+
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }], // Allow unused variables starting with `_`
+
+      '@typescript-eslint/no-explicit-any': 'warn', // Warn against using `any` type
+
+      // '@typescript-eslint/explicit-function-return-type': 'warn', // Encourage explicit return types for functions
+
+      // '@typescript-eslint/no-inferrable-types': 'warn', // Disallow explicit type declarations when they can be inferred
+
+      // '@typescript-eslint/no-empty-function': 'warn', // Warn against empty functions
+
+
+
+      // Style and Formatting Rules
+
+      indent: ['error', 2], // Enforce 2-space indentation
+
+      quotes: ['error', 'single'] // Enforce single quotes
+
+      // 'object-curly-spacing': ['error', 'always'], // Enforce spaces inside curly braces
+
+      // 'array-bracket-spacing': ['error', 'never'], // Disallow spaces inside array brackets
+
+      // 'space-before-function-paren': ['error', 'never'], // No space before function parentheses
+
+    }
+
+  }
+
+]
+
+./README.md
+
+# Description
+
+
+
+This repository is a backend REST API built with Node.js and TypeScript, focusing on managing projects and their members, including support for nested groups (up to 5 levels). It uses TypeORM with SQLite for persistence and provides a GET /projects/:id/members endpoint to retrieve a flattened list of members recursively. The project avoids the need for a .env file to simplify testing and deployment for GitHub users.
+
+
+
+# Docker Installation
+
+
+
+Having installed:
+
+
+
+- docker
+
+
+
+Clone the project in a terminal:
+
+
+
+- `git clone https://github.com/gary003/test_asynchrone_dev_backend.git`
+
+
+
+- `cd test_asynchrone_dev_backend.git`
+
+
+
+Build the Image from Dockerfile, in a terminal:
+
+
+
+- `docker build -t docker_app .`
+
+
+
+# Start API
+
+
+
+### Docker
+
+
+
+Launch a container from image
+
+
+
+- `docker run -it -p 8080:8080 -v data:/tap/app/data docker_app`
+
+
+
+### Git
+
+
+
+Install depedencies:
+
+
+
+- `npm install`
+
+
+
+- `npm run start`
+
+
+
+Tests + Coverage
+
+Launch global tests, at the root of the project:
+
+
+
+- `npm run test`
+
+
+
+This runs Mocha tests with Chai assertions and Supertest for integration testing. Coverage reports with c8.
+
+
+
+# OpenAPI (Swagger)
+
+
+
+Copy this URL into a browser (adapt the port if needed):
+
+
+
+- localhost:8080
+
+
+
+# Developer
+
+
+
+Gary Johnson
+
+
+
+- Email: gary.johnson.freelance@gmail.com
+
+- GitHub: https://github.com/gary003
+
+
+
+# License
+
+
+
+[MIT]
+

@@ -3,21 +3,25 @@ import { DataSource, DataSourceOptions } from 'typeorm'
 
 let connection: DataSource | null = null
 
-const getConnectionOptions = async (): Promise<DataSourceOptions> => {
-  return {
+const getConnectionOptions = async () => {
+  const op = {
     type: 'sqlite',
-    database: path.join(__dirname, '/../../../../../../projects.db'),
-    entities: [path.join(__dirname, '/../entity.*s')],
+    database: path.join(__dirname, '../../../../../../data/projects.db'),
+    entities: [path.join(__dirname, '../entity.*s')],
     synchronize: false,
     logging: process.env.NODE_ENV !== 'production'
   }
+
+  return op
 }
 
 export const getConnection = async (): Promise<DataSource> => {
   if (connection && connection.isInitialized) return connection
 
   const options = await getConnectionOptions()
-  connection = new DataSource(options)
+
+  connection = new DataSource(options as DataSourceOptions)
+
   await connection.initialize()
 
   return connection
